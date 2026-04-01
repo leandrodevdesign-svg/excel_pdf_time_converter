@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Upload an Excel timesheet, review worked-hours insights, and export the dashboard to PDF."
+  >
+  <title>Worked Hours Dashboard</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="./assets/js/app.js"></script>
+</head>
+<body class="is-loading">
+  <div class="page-loader" id="pageLoader" aria-hidden="true">
+    <div class="page-loader__content">
+      <div class="page-loader__spinner"></div>
+      <p class="page-loader__label">Preparing dashboard...</p>
+    </div>
+  </div>
+
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="#" class="logo" aria-label="1950Labs Home">
+        <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 461.18 326.08">
+          <defs>
+            <style>
+              .cls-1 {
+                stroke-width: 0px;
+              }
+            </style>
+          </defs>
+          <path class="cls-1" d="m100.38,170.57l9.24-7.3-9.2-7.26,5.77-10.36-11.2-3.14,1.38-11.69-11.64,1.37-3.25-11.41-10.14,5.7-7.29-9.24-7.29,9.23-10.2-5.86-3.33,11.29-11.54-1.52,1.23,11.8-11.32,3.06,5.63,10.34-9.23,7.08,9.21,7.47-5.84,10.16,11.29,3.33-1.52,11.54,11.8-1.23,3.06,11.32,10.34-5.63,7.09,9.23,7.45-9.18,10.33,5.75,3.14-11.2,11.7,1.38-1.37-11.64,11.41-3.25-5.7-10.14Zm-36.57,17.51c-13.96,0-25.28-11.32-25.28-25.28s11.32-25.28,25.28-25.28,25.28,11.32,25.28,25.28-11.32,25.28-25.28,25.28Z"/>
+          <g>
+            <path class="cls-1" d="m183.06,134.28c-9.66.01-16.16,7.6-16.14,19.13.01,10.58,3.9,16.97,12.66,16.96.08,0,.18,0,.25,0,4.73,0,9.05-1.76,11.15-4.55.25,12.87-1.67,17.59-6.46,17.93-3.96.28-6.42-2.55-6.62-9.35h-9.63c-.08,10.5,6.06,16.75,15.36,16.74,12.64-.01,16.79-9.36,16.79-29.81,0-18.61-5.36-27.05-17.37-27.04Zm-6.56,19.13c-.03-7.42,2.4-11.7,7-11.71,4.7-.02,7.24,4.16,7.27,11.9.03,6.79-2.4,10.67-7.27,10.69-4.61.02-6.97-3.76-7-10.87Z"/>
+            <path class="cls-1" d="m265.97,134.28c-10.84,0-17.25,10.5-17.25,28.5v.47c0,17.61,6.41,27.87,17.25,27.87s17.43-10.26,17.43-27.87v-.47c0-18-6.32-28.5-17.43-28.5Zm7.49,28.98c0,15.71-2.89,20.45-7.49,20.45s-7.31-4.74-7.31-20.45v-.47c0-16.19,2.89-20.92,7.31-20.92s7.49,4.74,7.49,20.92v.47Z"/>
+            <polygon class="cls-1" points="300.58 135.07 290.29 135.07 290.29 190.34 317.74 190.34 317.74 182.44 300.58 182.44 300.58 135.07"/>
+            <path class="cls-1" d="m334.07,135.07l-11.2,55.27h10.43l2.17-11.29h14l2.08,11.29h10.43l-11.29-55.27h-16.62Zm2.66,36.95l5.87-30.87,5.6,30.87h-11.47Z"/>
+            <path class="cls-1" d="m392.25,162.43c6.25-1.84,9.85-5.96,9.85-12.68,0-9.48-6.05-14.69-18.33-14.69h-14.18v55.27h15.89c10.93,0,17.61-4.18,17.61-13.74,0-5.98-3.55-12.21-10.84-14.17h0Zm-12.37-20.26h3.43c5.78,0,8.94,2.92,8.94,8.69,0,5.13-3.07,8.37-9.12,8.37h-3.25v-17.05Zm4.06,41.29h-4.06v-17.76h3.34c6.41,0,10.02,3,10.02,8.53,0,5.84-3.43,9.24-9.3,9.24Z"/>
+            <path class="cls-1" d="m420.25,147.78c0-4.11,2.71-6.32,5.96-6.32,3.52,0,6.27,1.63,5.33,12.48h10.21c.45-13.82-5.42-19.66-15.71-19.66-9.66,0-15.62,5.21-15.62,14.53,0,22.19,23.03,15.24,23.03,29.06,0,3.95-2.08,6.08-5.42,6.08s-7.13-.76-7.13-9.95h-10.57c0,12.08,6.5,17.13,17.07,17.13,9.57,0,15.8-5.05,15.8-14.68,0-20.14-22.94-13.58-22.94-28.66Z"/>
+            <path class="cls-1" d="m154.52,135.07h-8.76c0,5.39-.51,10.89-12.56,10.89v8.25s11.57-.49,11.57-5.56v33.79h-9.2v7.9h27.47v-7.9h-8.52v-47.37Z"/>
+            <path class="cls-1" d="m224.55,191.13c10.2,0,17.82-7.82,17.82-20.29,0-7.94-1.54-13.15-4.17-16.28-1.45-1.73-3.92-3.54-9.31-3.54-6.96,0-10.86,4.72-11.51,6.42v-14.47h20.98v-7.9h-29.5c-.09,12.24,0,31.58,0,31.58l9.46,1.66s.34-10.12,6.82-10.13c6.48-.01,7.67,8.7,7.67,12.5s-.17,13.02-7.7,13.03c-4.12,0-6.42-2.55-6.62-9.35h-9.63c-.08,10.5,6.39,16.78,15.69,16.77"/>
+          </g>
+        </svg>
+      </a>
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#" class="active" aria-current="page">Single</a></li>
+          <li><a href="#">Batch</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="dashboard">
+    <section class="hero" aria-labelledby="dashboard-title">
+      <article class="card hero-main">
+        <p class="eyebrow">Time Analytics</p>
+        <h1 id="dashboard-title">Worked Hours Dashboard</h1>
+        <p>
+          Upload an Excel file with columns such as <strong>Date</strong>, <strong>In</strong>, <strong>Out</strong>,
+          <strong>Time</strong>, <strong>Customer</strong>, <strong>Project</strong>, and <strong>Activity</strong>.
+          The application restructures the raw data into an executive dashboard with metrics, workload distribution,
+          quick insights, and an audit-ready detail table.
+        </p>
+      </article>
+
+      <aside class="card hero-actions" aria-label="Dashboard actions">
+        <div class="uploader">
+          <label class="file-label" for="excelInput">Upload Excel File</label>
+          <input type="file" id="excelInput" accept=".xlsx,.xls">
+          <button class="button secondary" id="pdfBtn" type="button">Export to PDF</button>
+        </div>
+
+        <p class="status" id="status" aria-live="polite">
+          Waiting for a file. Use the same structure exported by your time-tracking system.
+        </p>
+
+        <p class="badge" id="periodBadge">No data loaded yet</p>
+      </aside>
+    </section>
+
+    <section class="grid-kpis" aria-label="Key performance indicators">
+      <article class="card kpi">
+        <p class="label" data-typed-static="true">Total Hours</p>
+        <p class="value" id="kpiTotal">0 h</p>
+        <p class="sub" id="kpiTotalSub">Upload a file to calculate this indicator</p>
+      </article>
+
+      <article class="card kpi">
+        <p class="label" data-typed-static="true">Average per Day</p>
+        <p class="value" id="kpiAvg">0 h</p>
+        <p class="sub" id="kpiAvgSub">Based on days with logged activity</p>
+      </article>
+
+      <article class="card kpi">
+        <p class="label" data-typed-static="true">Busiest Day</p>
+        <p class="value" id="kpiBest">-</p>
+        <p class="sub" id="kpiBestSub">The date and total load will appear here</p>
+      </article>
+
+      <article class="card kpi">
+        <p class="label" data-typed-static="true">Billable Percentage</p>
+        <p class="value" id="kpiBillable">0%</p>
+        <p class="sub" id="kpiBillableSub">Calculated from the Billable column</p>
+      </article>
+    </section>
+
+    <section class="content-grid" aria-label="Daily overview">
+      <article class="card panel">
+        <h2 data-typed-static="true">Daily Distribution</h2>
+        <p class="panel-subtitle" data-typed-static="true">Hours grouped by day to identify patterns and workload peaks.</p>
+        <div id="dailyChart" class="chart" role="img" aria-label="Daily worked hours chart"></div>
+      </article>
+
+      <article class="card panel">
+        <h2 data-typed-static="true">Quick Reads</h2>
+        <p class="panel-subtitle" data-typed-static="true">High-level indicators for operational or management review.</p>
+        <div class="stats-list" id="quickStats"></div>
+      </article>
+    </section>
+
+    <section class="content-grid" aria-label="Work allocation overview">
+      <article class="card panel">
+        <h2>Hours by Project</h2>
+        <p class="panel-subtitle">Ranking of projects with the highest accumulated effort.</p>
+        <div id="projectChart" class="chart" role="img" aria-label="Hours by project chart"></div>
+      </article>
+
+      <article class="card panel">
+        <h2>Hours by Activity</h2>
+        <p class="panel-subtitle">Shows which type of work consumes the most time.</p>
+        <div id="activityChart" class="chart" role="img" aria-label="Hours by activity chart"></div>
+      </article>
+    </section>
+
+    <section class="card panel" aria-labelledby="detail-title">
+      <h2 id="detail-title">Record Details</h2>
+      <p class="panel-subtitle">Operational view ordered for audits, validation, or manual review.</p>
+      <div id="tableContainer" class="empty">There are no records to display yet.</div>
+      <p class="footer-note">PDF export is built into the page.</p>
+    </section>
+  </main>
+</body>
+</html>
