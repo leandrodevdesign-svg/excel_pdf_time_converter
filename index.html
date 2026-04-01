@@ -7,7 +7,7 @@
     name="description"
     content="Upload an Excel timesheet, review worked-hours insights, and export the dashboard to PDF."
   >
-  <title>Worked Hours Dashboard</title>
+  <title>Worked Hours Dashboard - 1950Labs</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="./assets/css/styles.css">
@@ -19,7 +19,7 @@
   <div class="page-loader" id="pageLoader" aria-hidden="true">
     <div class="page-loader__content">
       <div class="page-loader__spinner"></div>
-      <p class="page-loader__label">Preparing dashboard...</p>
+      <p class="page-loader__label">Please wait while Windows loads Worked Hours Dashboard...</p>
     </div>
   </div>
 
@@ -115,13 +115,13 @@
       <article class="card panel">
         <h2 data-typed-static="true">Daily Distribution</h2>
         <p class="panel-subtitle" data-typed-static="true">Hours grouped by day to identify patterns and workload peaks.</p>
-        <div id="dailyChart" class="chart" role="img" aria-label="Daily worked hours chart"></div>
+        <div id="dailyChart" class="chart" role="img" aria-label="Daily worked hours chart" style="margin:0 10px 10px;"></div>
       </article>
 
       <article class="card panel">
         <h2 data-typed-static="true">Quick Reads</h2>
         <p class="panel-subtitle" data-typed-static="true">High-level indicators for operational or management review.</p>
-        <div class="stats-list" id="quickStats"></div>
+        <div class="stats-list" id="quickStats" style="padding:0 10px 10px;"></div>
       </article>
     </section>
 
@@ -129,22 +129,28 @@
       <article class="card panel">
         <h2>Hours by Project</h2>
         <p class="panel-subtitle">Ranking of projects with the highest accumulated effort.</p>
-        <div id="projectChart" class="chart" role="img" aria-label="Hours by project chart"></div>
+        <div id="projectChart" class="chart" role="img" aria-label="Hours by project chart" style="margin:0 10px 10px;"></div>
       </article>
 
       <article class="card panel">
         <h2>Hours by Activity</h2>
         <p class="panel-subtitle">Shows which type of work consumes the most time.</p>
-        <div id="activityChart" class="chart" role="img" aria-label="Hours by activity chart"></div>
+        <div id="activityChart" class="chart" role="img" aria-label="Hours by activity chart" style="margin:0 10px 10px;"></div>
       </article>
     </section>
 
     <section class="card panel" aria-labelledby="detail-title">
       <h2 id="detail-title">Record Details</h2>
-      <p class="panel-subtitle">Operational view ordered for audits, validation, or manual review.</p>
-      <div id="tableContainer" class="empty">There are no records to display yet.</div>
-      <p class="footer-note">PDF export is built into the page.</p>
+      <p class="panel-subtitle" style="padding:6px 10px 0;">Operational view ordered for audits, validation, or manual review.</p>
+      <div id="tableContainer" class="empty" style="margin:10px;">There are no records to display yet.</div>
+      <p class="footer-note" style="padding:0 10px 8px;">PDF export is built into the page.</p>
     </section>
   </main>
+
+  <!-- Windows 2000 status bar -->
+  <div class="status-bar" role="status" aria-live="polite">
+    <span id="statusBarText">Ready</span>
+    <span style="margin-left:auto;">1950Labs Worked Hours Dashboard v1.0</span>
+  </div>
 </body>
 </html>
