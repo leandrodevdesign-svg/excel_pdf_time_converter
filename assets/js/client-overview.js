@@ -261,6 +261,7 @@ function renderAllCharts(metrics) {
   destroyCharts();
 
   const topClients = metrics.clientSummaries.slice(0, 8);
+  const allClients = metrics.clientSummaries;
   const clientLabels = topClients.map((item) => item.client);
   const clientHours = topClients.map((item) => round(item.totalHours));
   const clientColors = clientLabels.map((label) => getClientColor(label));
@@ -276,9 +277,10 @@ function renderAllCharts(metrics) {
 
   state.charts.push(
     createDonutChart(elements.chartHoursDistributionByClient, {
-      labels: topClients.map((item) => item.client),
-      series: topClients.map((item) => round(item.totalHours)),
-      colors: clientColors
+      labels: allClients.map((item) => item.client),
+      series: allClients.map((item) => round(item.totalHours)),
+      colors: allClients.map((item) => getClientColor(item.client)),
+      totalValue: metrics.totalHours
     })
   );
 
@@ -451,6 +453,9 @@ function createBaseOptions() {
   return {
     chart: {
       background: "transparent",
+      animations: {
+        enabled: state.chartTheme !== "pdf"
+      },
       zoom: {
         enabled: false
       },
@@ -565,7 +570,8 @@ function createDonutChart(element, config) {
             total: {
               show: true,
               color: theme.donutTotalColor,
-              label: "Total Hours"
+              label: "Total Hours",
+              formatter: () => formatHours(config.totalValue || config.series.reduce((sum, value) => sum + value, 0))
             }
           }
         }

@@ -489,6 +489,31 @@ tbody tr:hover td {
   padding-bottom: 0;
 }
 
+.pdf-mode .hero,
+.pdf-mode .content-grid,
+.pdf-mode .grid-kpis,
+.pdf-mode .mini-grid {
+  grid-template-columns: 1fr !important;
+}
+
+.pdf-mode .panel-head {
+  flex-direction: column;
+}
+
+.pdf-mode .chart,
+.pdf-mode .chart--small {
+  min-height: 280px;
+  width: 100%;
+}
+
+.pdf-mode .card,
+.pdf-mode .mini-chart,
+.pdf-mode .panel,
+.pdf-mode .kpi {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 .empty-state {
   text-align: center;
 }
