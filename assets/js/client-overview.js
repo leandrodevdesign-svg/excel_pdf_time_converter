@@ -30,7 +30,8 @@ const state = {
   metrics: null,
   colorMapByClient: new Map(),
   colorMapByProject: new Map(),
-  charts: []
+  charts: [],
+  chartTheme: "screen"
 };
 
 const elements = {
@@ -38,6 +39,7 @@ const elements = {
   overviewBadge: document.getElementById("overviewBadge"),
   overviewDescription: document.getElementById("overviewDescription"),
   overviewEmptyState: document.getElementById("overviewEmptyState"),
+  overviewPdfBtn: document.getElementById("overviewPdfBtn"),
   topClientsControl: document.getElementById("topClientsControl"),
   summaryTableContainer: document.getElementById("summaryTableContainer"),
   kpiTotalHours: document.getElementById("kpiTotalHours"),
@@ -71,6 +73,10 @@ function init() {
 }
 
 function bindEvents() {
+  if (elements.overviewPdfBtn) {
+    elements.overviewPdfBtn.addEventListener("click", exportOverviewPdf);
+  }
+
   elements.topClientsControl.addEventListener("click", (event) => {
     const button = event.target.closest("[data-top-clients]");
     if (!button) {
@@ -440,6 +446,8 @@ function destroyCharts() {
 }
 
 function createBaseOptions() {
+  const theme = getChartTheme();
+
   return {
     chart: {
       background: "transparent",
@@ -450,26 +458,27 @@ function createBaseOptions() {
         enabled: false
       },
       toolbar: { show: false },
-      foreColor: "#b2b2b8"
+      foreColor: theme.foreColor
     },
     dataLabels: { enabled: false },
     stroke: { width: 3, curve: "smooth" },
     legend: {
       position: "bottom",
-      labels: { colors: "#b2b2b8" }
+      labels: { colors: theme.foreColor }
     },
     grid: {
-      borderColor: "rgba(255, 255, 255, 0.08)"
+      borderColor: theme.gridColor
     },
     tooltip: {
-      theme: "dark"
+      theme: theme.tooltipTheme
     },
-    colors: ["#ffffff", "#d0d0d5", "#9fa4af", "#6f7682", "#4f5561", "#f2c94c", "#87d37c", "#56ccf2"]
+    colors: theme.defaultSeriesColors
   };
 }
 
 function createBarChart(element, config) {
   const options = createBaseOptions();
+  const theme = getChartTheme();
   const chart = new ApexCharts(element, {
     ...options,
     chart: {
@@ -489,10 +498,10 @@ function createBarChart(element, config) {
     series: config.series,
     xaxis: {
       categories: config.categories,
-      labels: { style: { colors: "#8a8a92" } }
+      labels: { style: { colors: theme.axisLabelColor } }
     },
     yaxis: {
-      labels: { style: { colors: "#8a8a92" } }
+      labels: { style: { colors: theme.axisLabelColor } }
     }
   });
 
@@ -503,6 +512,7 @@ function createBarChart(element, config) {
 
 function createLineChart(element, config) {
   const options = createBaseOptions();
+  const theme = getChartTheme();
   const chart = new ApexCharts(element, {
     ...options,
     chart: {
@@ -515,12 +525,12 @@ function createLineChart(element, config) {
     xaxis: {
       categories: config.categories,
       labels: {
-        style: { colors: "#8a8a92" },
+        style: { colors: theme.axisLabelColor },
         rotate: -45
       }
     },
     yaxis: {
-      labels: { style: { colors: "#8a8a92" } }
+      labels: { style: { colors: theme.axisLabelColor } }
     }
   });
 
@@ -531,6 +541,7 @@ function createLineChart(element, config) {
 
 function createDonutChart(element, config) {
   const options = createBaseOptions();
+  const theme = getChartTheme();
   const chart = new ApexCharts(element, {
     ...options,
     chart: {
@@ -549,11 +560,11 @@ function createDonutChart(element, config) {
           labels: {
             show: true,
             value: {
-              color: "#f5f5f5"
+              color: theme.donutValueColor
             },
             total: {
               show: true,
-              color: "#b2b2b8",
+              color: theme.donutTotalColor,
               label: "Total Hours"
             }
           }
@@ -562,7 +573,7 @@ function createDonutChart(element, config) {
     },
     legend: {
       position: "bottom",
-      labels: { colors: "#b2b2b8" }
+      labels: { colors: theme.foreColor }
     }
   });
 
@@ -573,6 +584,7 @@ function createDonutChart(element, config) {
 
 function createStackedBarChart(element, config) {
   const options = createBaseOptions();
+  const theme = getChartTheme();
   const chart = new ApexCharts(element, {
     ...options,
     chart: {
@@ -592,10 +604,10 @@ function createStackedBarChart(element, config) {
     series: config.series,
     xaxis: {
       categories: config.categories,
-      labels: { style: { colors: "#8a8a92" } }
+      labels: { style: { colors: theme.axisLabelColor } }
     },
     yaxis: {
-      labels: { style: { colors: "#8a8a92" } }
+      labels: { style: { colors: theme.axisLabelColor } }
     }
   });
 
@@ -614,10 +626,121 @@ function showEmptyState() {
   elements.overviewEmptyState.classList.remove("is-hidden");
   elements.overviewStatus.textContent = "Waiting for batch data. Open this page from Batch after loading Excel files.";
   elements.overviewBadge.textContent = "No batch data available";
+  if (elements.overviewPdfBtn) {
+    elements.overviewPdfBtn.disabled = true;
+  }
 }
 
 function hideEmptyState() {
   elements.overviewEmptyState.classList.add("is-hidden");
+  if (elements.overviewPdfBtn) {
+    elements.overviewPdfBtn.disabled = false;
+  }
+}
+
+function getChartTheme() {
+  if (state.chartTheme === "pdf") {
+    return {
+      foreColor: "#4b5563",
+      axisLabelColor: "#4b5563",
+      gridColor: "rgba(15, 23, 42, 0.12)",
+      tooltipTheme: "light",
+      donutValueColor: "#111827",
+      donutTotalColor: "#475569",
+      defaultSeriesColors: ["#0f172a", "#1d4ed8", "#0f766e", "#dc2626", "#9333ea", "#d97706", "#0ea5e9", "#65a30d"]
+    };
+  }
+
+  return {
+    foreColor: "#b2b2b8",
+    axisLabelColor: "#8a8a92",
+    gridColor: "rgba(255, 255, 255, 0.08)",
+    tooltipTheme: "dark",
+    donutValueColor: "#f5f5f5",
+    donutTotalColor: "#b2b2b8",
+    defaultSeriesColors: ["#ffffff", "#d0d0d5", "#9fa4af", "#6f7682", "#4f5561", "#f2c94c", "#87d37c", "#56ccf2"]
+  };
+}
+
+async function exportOverviewPdf() {
+  if (!state.metrics || !state.rows.length) {
+    elements.overviewStatus.textContent = "Load Batch data before exporting Client Overview.";
+    return;
+  }
+
+  elements.overviewStatus.textContent = "Generating a print-friendly Client Overview PDF...";
+  if (elements.overviewPdfBtn) {
+    elements.overviewPdfBtn.disabled = true;
+  }
+
+  state.chartTheme = "pdf";
+  renderAllCharts(state.metrics);
+  document.documentElement.classList.add("pdf-mode");
+  document.body.classList.add("pdf-mode");
+  document.getElementById("clientOverview").classList.add("pdf-mode");
+
+  const options = {
+    margin: [8, 8, 8, 8],
+    filename: buildOverviewPdfFilename(),
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      scrollX: 0,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait"
+    },
+    pagebreak: {
+      mode: ["avoid-all", "css", "legacy"],
+      avoid: [".card", ".mini-chart", "tr"]
+    }
+  };
+
+  try {
+    await new Promise((resolve) => window.setTimeout(resolve, 220));
+    await html2pdf().set(options).from(document.getElementById("clientOverview")).save();
+    elements.overviewStatus.textContent = "Client Overview PDF exported successfully.";
+  } catch (error) {
+    console.error(error);
+    elements.overviewStatus.textContent = "The Client Overview PDF export failed.";
+  } finally {
+    document.documentElement.classList.remove("pdf-mode");
+    document.body.classList.remove("pdf-mode");
+    document.getElementById("clientOverview").classList.remove("pdf-mode");
+    state.chartTheme = "screen";
+    renderAllCharts(state.metrics);
+    if (elements.overviewPdfBtn) {
+      elements.overviewPdfBtn.disabled = false;
+    }
+  }
+}
+
+function buildOverviewPdfFilename() {
+  const first = state.metrics && state.metrics.dailyTotals[0] ? state.metrics.dailyTotals[0].dateObj : null;
+  const last = state.metrics && state.metrics.dailyTotals[state.metrics.dailyTotals.length - 1]
+    ? state.metrics.dailyTotals[state.metrics.dailyTotals.length - 1].dateObj
+    : null;
+
+  if (!first || !last) {
+    return "client-overview.pdf";
+  }
+
+  return `client-overview-from-${formatDateSlug(first)}-to-${formatDateSlug(last)}.pdf`;
+}
+
+function formatDateSlug(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit"
+  })
+    .format(date)
+    .toLowerCase()
+    .replace(/\s+/g, "-");
 }
 
 function getTopMapEntry(map) {

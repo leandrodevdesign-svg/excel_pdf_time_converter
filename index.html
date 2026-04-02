@@ -5,30 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta
     name="description"
-    content="Upload an Excel timesheet, review worked-hours insights, and export the dashboard to PDF."
+    content="Worked Hours Dashboard helps teams upload Excel timesheets, analyze workload, compare clients, and export polished PDF reports."
   >
   <title>Worked Hours Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Sora:wght@100..800&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="stylesheet" href="./assets/css/styles.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script defer src="./assets/js/app.js"></script>
+  <link rel="stylesheet" href="./assets/css/home.css">
 </head>
-<body class="is-loading">
-  <div class="page-loader" id="pageLoader" aria-hidden="true">
-    <div class="page-loader__content">
-      <div class="page-loader__spinner"></div>
-      <p class="page-loader__label">Preparing dashboard...</p>
-    </div>
-  </div>
-
+<body>
   <header class="top-nav">
     <div class="nav-container">
-      <a href="./index.html#single" class="logo" aria-label="1950Labs Home">
+      <a href="./index.html" class="logo" aria-label="1950Labs Home">
         <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 461.18 326.08">
           <defs>
             <style>
@@ -52,129 +40,133 @@
       </a>
       <nav aria-label="Main Navigation">
         <ul class="nav-links">
-          <li><a href="./index.html#single">Home</a></li>
-          <li><a href="./index.html#single" class="active" aria-current="page" data-mode-link="single">Single</a></li>
-          <li><a href="./index.html#batch" data-mode-link="batch">Batch</a></li>
+          <li><a href="./index.html" class="active" aria-current="page">Home</a></li>
+          <li><a href="./dashboard.html#single">Single</a></li>
+          <li><a href="./dashboard.html#batch">Batch</a></li>
+          <li><a href="./client-overview.html">Client Overview</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <main class="container" id="dashboard">
-    <section class="hero" aria-labelledby="dashboard-title">
-      <article class="card hero-main">
-        <p class="eyebrow" id="heroEyebrow">Time Analytics</p>
-        <h1 id="dashboard-title">Worked Hours Dashboard</h1>
-        <p id="heroDescription">
-          Upload an Excel file with columns such as <strong>Date</strong>, <strong>In</strong>, <strong>Out</strong>,
-          <strong>Time</strong>, <strong>Customer</strong>, <strong>Project</strong>, and <strong>Activity</strong>.
-          The application restructures the raw data into an executive dashboard with metrics, workload distribution,
-          quick insights, and an audit-ready detail table.
+  <main class="container">
+    <section class="hero">
+      <article class="hero-copy card">
+        <p class="eyebrow">Time Reporting Software</p>
+        <h1>Turn raw Excel timesheets into dashboards, client intelligence, and exportable reports.</h1>
+        <p class="hero-text">
+          Worked Hours Dashboard helps teams upload one or many Excel files, understand workload instantly, filter by user, review client-level analytics, and export polished PDF reports without needing a backend or setup-heavy workflow.
         </p>
+        <div class="hero-actions">
+          <a class="button" href="./dashboard.html#single">Open Single Mode</a>
+          <a class="button secondary" href="./dashboard.html#batch">Open Batch Mode</a>
+        </div>
+        <div class="hero-note">
+          <span class="badge">Excel in</span>
+          <span class="badge">Dashboard out</span>
+          <span class="badge">PDF ready</span>
+        </div>
       </article>
 
-      <aside class="card hero-actions" aria-label="Dashboard actions">
-        <div class="uploader">
-          <label class="file-label" for="excelInput" id="uploadLabel">Upload Excel File</label>
-          <input type="file" id="excelInput" accept=".xlsx,.xls">
-          <button class="button secondary" id="pdfBtn" type="button">Export to PDF</button>
+      <aside class="hero-visual card">
+        <div class="signal-grid">
+          <div class="signal-card signal-card--main">
+            <p class="signal-label">Control</p>
+            <p class="signal-value">Real visibility</p>
+            <p class="signal-sub">Workload, clients, activities, trends.</p>
+          </div>
+          <div class="signal-card">
+            <p class="signal-label">Single</p>
+            <p class="signal-sub">One file, one fast operational dashboard.</p>
+          </div>
+          <div class="signal-card">
+            <p class="signal-label">Batch</p>
+            <p class="signal-sub">Multiple files or multiple users with filters.</p>
+          </div>
+          <div class="signal-orbit" aria-hidden="true"></div>
         </div>
-
-        <p class="status" id="status" aria-live="polite">
-          Waiting for a file. Use the same structure exported by your time-tracking system.
-        </p>
-
-        <p class="badge" id="periodBadge">No data loaded yet</p>
       </aside>
     </section>
 
-    <section class="filters-grid is-hidden" id="batchFilters">
-      <article class="card panel filters-panel" aria-labelledby="batch-filters-title">
-        <div class="filters-head">
-          <div>
-            <h2 id="batch-filters-title">User Selection</h2>
-            <p class="panel-subtitle">Choose one, multiple, or all users. The table and exported PDF will use only the selected users.</p>
-          </div>
-          <div class="filter-actions">
-            <button class="button secondary small" id="selectAllUsersBtn" type="button">Select All</button>
-            <button class="button secondary small" id="clearUsersBtn" type="button">Clear</button>
-          </div>
-        </div>
-        <div class="user-chip-list" id="userFilterList"></div>
-      </article>
-
-      <article class="card panel overview-panel" aria-labelledby="client-overview-title">
-        <h2 id="client-overview-title">Client Overview</h2>
-        <p class="panel-subtitle">Open the client-focused workspace. This page is scaffolded now and ready for future implementation.</p>
-        <a class="button secondary" href="./client-overview.html">Open Client Overview</a>
-      </article>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">What It Does</p>
+        <h2>Built for teams that need clarity, not spreadsheet chaos.</h2>
+      </div>
+      <div class="feature-grid">
+        <article class="card feature-card">
+          <h3>Single Analysis</h3>
+          <p>Upload one Excel file and get total hours, daily distribution, project and activity breakdowns, operational details, and PDF export.</p>
+        </article>
+        <article class="card feature-card">
+          <h3>Batch Analysis</h3>
+          <p>Upload several files or one file with many users, select who should be included, and keep the dashboard focused on the visible users only.</p>
+        </article>
+        <article class="card feature-card">
+          <h3>Client Overview</h3>
+          <p>Move from operational records to management insight with client concentration, workload trends, activity distribution, and executive summary tables.</p>
+        </article>
+      </div>
     </section>
 
-    <section class="grid-kpis" aria-label="Key performance indicators">
-      <article class="card kpi">
-        <p class="label" data-typed-static="true">Total Hours</p>
-        <p class="value" id="kpiTotal">0 h</p>
-        <p class="sub" id="kpiTotalSub">Upload a file to calculate this indicator</p>
-      </article>
-
-      <article class="card kpi">
-        <p class="label" data-typed-static="true">Average per Day</p>
-        <p class="value" id="kpiAvg">0 h</p>
-        <p class="sub" id="kpiAvgSub">Based on days with logged activity</p>
-      </article>
-
-      <article class="card kpi">
-        <p class="label" data-typed-static="true">Busiest Day</p>
-        <p class="value" id="kpiBest">-</p>
-        <p class="sub" id="kpiBestSub">The date and total load will appear here</p>
-      </article>
-
-      <article class="card kpi">
-        <p class="label" data-typed-static="true">Billable Percentage</p>
-        <p class="value" id="kpiBillable">0%</p>
-        <p class="sub" id="kpiBillableSub">Calculated from the Billable column</p>
-      </article>
+    <section class="section section--steps">
+      <div class="section-head">
+        <p class="eyebrow">How To Use It</p>
+        <h2>A clear workflow from upload to report.</h2>
+      </div>
+      <div class="steps-grid">
+        <article class="card step-card">
+          <p class="step-index">01</p>
+          <h3>Choose the right mode</h3>
+          <p>Use <strong>Single</strong> when working with one export, or <strong>Batch</strong> when you need multiple users or multiple Excel files together.</p>
+        </article>
+        <article class="card step-card">
+          <p class="step-index">02</p>
+          <h3>Upload the Excel data</h3>
+          <p>Load `.xlsx` or `.xls` files that include columns such as Date, In, Out, Time, Client, Project, Activity, Description, and Username.</p>
+        </article>
+        <article class="card step-card">
+          <p class="step-index">03</p>
+          <h3>Review the dashboard</h3>
+          <p>Inspect KPIs, daily load, projects, activities, quick reads, and the detailed records table to understand the operating picture.</p>
+        </article>
+        <article class="card step-card">
+          <p class="step-index">04</p>
+          <h3>Filter in Batch mode</h3>
+          <p>When multiple users exist, choose one, several, or all users. The dashboard, table, and exported PDF will follow that selection.</p>
+        </article>
+        <article class="card step-card">
+          <p class="step-index">05</p>
+          <h3>Open Client Overview</h3>
+          <p>Jump to the client intelligence page to understand client concentration, performance, activity mix, and trend behavior over time.</p>
+        </article>
+        <article class="card step-card">
+          <p class="step-index">06</p>
+          <h3>Export polished PDFs</h3>
+          <p>Generate shareable PDF reports from both the dashboard and the client overview, with layouts prepared for readable presentation.</p>
+        </article>
+      </div>
     </section>
 
-    <section class="content-grid" aria-label="Daily overview">
-      <article class="card panel">
-        <h2 data-typed-static="true">Daily Distribution</h2>
-        <p class="panel-subtitle" data-typed-static="true">Hours grouped by day to identify patterns and workload peaks.</p>
-        <div class="chart-toolbar" id="dailyChartToolbar">
-          <button class="button secondary small" id="dailyPrevMonthBtn" type="button">Previous Month</button>
-          <p class="chart-period" id="dailyMonthLabel">No month selected</p>
-          <button class="button secondary small" id="dailyNextMonthBtn" type="button">Next Month</button>
-        </div>
-        <div id="dailyChart" class="chart" role="img" aria-label="Daily worked hours chart"></div>
-      </article>
-
-      <article class="card panel">
-        <h2 data-typed-static="true">Quick Reads</h2>
-        <p class="panel-subtitle" data-typed-static="true">High-level indicators for operational or management review.</p>
-        <div class="stats-list" id="quickStats"></div>
-      </article>
-    </section>
-
-    <section class="content-grid" aria-label="Work allocation overview">
-      <article class="card panel">
-        <h2>Hours by Project</h2>
-        <p class="panel-subtitle">Ranking of projects with the highest accumulated effort.</p>
-        <div id="projectChart" class="chart" role="img" aria-label="Hours by project chart"></div>
-      </article>
-
-      <article class="card panel">
-        <h2>Hours by Activity</h2>
-        <p class="panel-subtitle">Shows which type of work consumes the most time.</p>
-        <div id="activityChart" class="chart" role="img" aria-label="Hours by activity chart"></div>
-      </article>
-    </section>
-
-    <section class="card panel" aria-labelledby="detail-title">
-      <h2 id="detail-title">Record Details</h2>
-      <p class="panel-subtitle">Operational view ordered for audits, validation, or manual review.</p>
-      <div id="tableContainer" class="empty">There are no records to display yet.</div>
-      <div class="table-pagination is-hidden" id="tablePagination"></div>
-      <p class="footer-note">PDF export is built into the page.</p>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">Who It Is For</p>
+        <h2>Useful for operations, leadership, and client-facing reporting.</h2>
+      </div>
+      <div class="audience-grid">
+        <article class="card audience-card">
+          <h3>Managers</h3>
+          <p>See workload concentration, active clients, delivery effort, and performance patterns quickly.</p>
+        </article>
+        <article class="card audience-card">
+          <h3>Operations Teams</h3>
+          <p>Audit records, validate timesheet structure, and review activity distributions without jumping between files.</p>
+        </article>
+        <article class="card audience-card">
+          <h3>Consulting or Service Teams</h3>
+          <p>Prepare internal reviews or external summaries from raw time-tracking exports with much less manual work.</p>
+        </article>
+      </div>
     </section>
   </main>
 </body>

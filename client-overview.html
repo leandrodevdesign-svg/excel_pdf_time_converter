@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="./assets/css/client-overview.css">
   <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script defer src="./assets/js/client-overview.js"></script>
 </head>
 <body>
@@ -43,9 +44,9 @@
       </a>
       <nav aria-label="Overview Navigation">
         <ul class="nav-links">
-          <li><a href="./index.html#single">Home</a></li>
-          <li><a href="./index.html#single">Single</a></li>
-          <li><a href="./index.html#batch">Batch</a></li>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./dashboard.html#single">Single</a></li>
+          <li><a href="./dashboard.html#batch">Batch</a></li>
           <li><a href="./client-overview.html" class="active" aria-current="page">Client Overview</a></li>
         </ul>
       </nav>
@@ -63,7 +64,8 @@
       </article>
       <aside class="card hero-actions">
         <div class="hero-actions__stack">
-          <a class="button secondary" href="./index.html#batch">Back to Batch Dashboard</a>
+          <a class="button secondary" href="./dashboard.html#batch">Back to Batch Dashboard</a>
+          <button class="button secondary" id="overviewPdfBtn" type="button">Export to PDF</button>
           <p class="status" id="overviewStatus">Waiting for batch data. Open this page from Batch after loading Excel files.</p>
         </div>
         <p class="badge" id="overviewBadge">No batch data available</p>
@@ -185,7 +187,7 @@
       <p class="panel-subtitle">
         Load one or more Excel files in Batch, select the users you want to include, and then open Client Overview again.
       </p>
-      <a class="button secondary" href="./index.html#batch">Go Back to Dashboard</a>
+      <a class="button secondary" href="./dashboard.html#batch">Go Back to Dashboard</a>
     </section>
   </main>
 </body>

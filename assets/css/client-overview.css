@@ -238,6 +238,13 @@ p {
   box-shadow: 0 10px 24px rgba(255, 255, 255, 0.08);
 }
 
+.button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
 .button.secondary {
   background: transparent;
   border-color: var(--line);
@@ -414,6 +421,72 @@ tbody tr:hover td {
 .summary-table-wrap table {
   width: max(100%, 1120px);
   min-width: 1120px;
+}
+
+.pdf-mode {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+.pdf-mode .card,
+.pdf-mode .mini-chart,
+.pdf-mode .table-wrap,
+.pdf-mode .summary-table-shell {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  box-shadow: none !important;
+}
+
+.pdf-mode .eyebrow,
+.pdf-mode .label,
+.pdf-mode .panel-subtitle,
+.pdf-mode .sub,
+.pdf-mode .status,
+.pdf-mode .badge,
+.pdf-mode h3,
+.pdf-mode p {
+  color: #475569 !important;
+}
+
+.pdf-mode h1,
+.pdf-mode h2,
+.pdf-mode .value,
+.pdf-mode thead th,
+.pdf-mode tbody td {
+  color: #111827 !important;
+}
+
+.pdf-mode .hero-actions__stack > .button,
+.pdf-mode .segmented-control {
+  display: none !important;
+}
+
+.pdf-mode .status,
+.pdf-mode .badge {
+  background: #f8fafc !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+.pdf-mode thead th {
+  background: #f8fafc !important;
+  border-bottom-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+.pdf-mode tbody td {
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.pdf-mode tbody tr:hover td {
+  background: transparent !important;
+}
+
+.pdf-mode .summary-table-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.pdf-mode .summary-table-wrap {
+  scrollbar-width: none;
+  padding-bottom: 0;
 }
 
 .empty-state {
