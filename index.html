@@ -53,8 +53,8 @@
       <nav aria-label="Main Navigation">
         <ul class="nav-links">
           <li><a href="#">Home</a></li>
-          <li><a href="#" class="active" aria-current="page">Single</a></li>
-          <li><a href="#">Batch</a></li>
+          <li><a href="#" class="active" aria-current="page" data-mode-link="single">Single</a></li>
+          <li><a href="#" data-mode-link="batch">Batch</a></li>
         </ul>
       </nav>
     </div>
@@ -63,9 +63,9 @@
   <main class="container" id="dashboard">
     <section class="hero" aria-labelledby="dashboard-title">
       <article class="card hero-main">
-        <p class="eyebrow">Time Analytics</p>
+        <p class="eyebrow" id="heroEyebrow">Time Analytics</p>
         <h1 id="dashboard-title">Worked Hours Dashboard</h1>
-        <p>
+        <p id="heroDescription">
           Upload an Excel file with columns such as <strong>Date</strong>, <strong>In</strong>, <strong>Out</strong>,
           <strong>Time</strong>, <strong>Customer</strong>, <strong>Project</strong>, and <strong>Activity</strong>.
           The application restructures the raw data into an executive dashboard with metrics, workload distribution,
@@ -75,7 +75,7 @@
 
       <aside class="card hero-actions" aria-label="Dashboard actions">
         <div class="uploader">
-          <label class="file-label" for="excelInput">Upload Excel File</label>
+          <label class="file-label" for="excelInput" id="uploadLabel">Upload Excel File</label>
           <input type="file" id="excelInput" accept=".xlsx,.xls">
           <button class="button secondary" id="pdfBtn" type="button">Export to PDF</button>
         </div>
@@ -86,6 +86,28 @@
 
         <p class="badge" id="periodBadge">No data loaded yet</p>
       </aside>
+    </section>
+
+    <section class="filters-grid is-hidden" id="batchFilters">
+      <article class="card panel filters-panel" aria-labelledby="batch-filters-title">
+        <div class="filters-head">
+          <div>
+            <h2 id="batch-filters-title">User Selection</h2>
+            <p class="panel-subtitle">Choose one, multiple, or all users. The table and exported PDF will use only the selected users.</p>
+          </div>
+          <div class="filter-actions">
+            <button class="button secondary small" id="selectAllUsersBtn" type="button">Select All</button>
+            <button class="button secondary small" id="clearUsersBtn" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="user-chip-list" id="userFilterList"></div>
+      </article>
+
+      <article class="card panel overview-panel" aria-labelledby="client-overview-title">
+        <h2 id="client-overview-title">Client Overview</h2>
+        <p class="panel-subtitle">Open the client-focused workspace. This page is scaffolded now and ready for future implementation.</p>
+        <a class="button secondary" href="./client-overview.html">Open Client Overview</a>
+      </article>
     </section>
 
     <section class="grid-kpis" aria-label="Key performance indicators">
@@ -118,6 +140,11 @@
       <article class="card panel">
         <h2 data-typed-static="true">Daily Distribution</h2>
         <p class="panel-subtitle" data-typed-static="true">Hours grouped by day to identify patterns and workload peaks.</p>
+        <div class="chart-toolbar" id="dailyChartToolbar">
+          <button class="button secondary small" id="dailyPrevMonthBtn" type="button">Previous Month</button>
+          <p class="chart-period" id="dailyMonthLabel">No month selected</p>
+          <button class="button secondary small" id="dailyNextMonthBtn" type="button">Next Month</button>
+        </div>
         <div id="dailyChart" class="chart" role="img" aria-label="Daily worked hours chart"></div>
       </article>
 
@@ -146,6 +173,7 @@
       <h2 id="detail-title">Record Details</h2>
       <p class="panel-subtitle">Operational view ordered for audits, validation, or manual review.</p>
       <div id="tableContainer" class="empty">There are no records to display yet.</div>
+      <div class="table-pagination is-hidden" id="tablePagination"></div>
       <p class="footer-note">PDF export is built into the page.</p>
     </section>
   </main>
