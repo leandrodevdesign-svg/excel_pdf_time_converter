@@ -3,46 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Client-level analytics for uploaded batch Excel timesheets."
+  >
   <title>Client Overview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(180deg, #151517 0%, #1d1d20 100%);
-      color: #f5f5f5;
-      font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
-    }
-
-    .placeholder {
-      width: min(720px, calc(100% - 32px));
-      padding: 32px;
-      border: 1px solid #2b2b2f;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: clamp(32px, 5vw, 56px);
-      line-height: 1;
-    }
-
-    p {
-      margin: 0;
-      color: #b2b2b8;
-      line-height: 1.6;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Sora:wght@100..800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="./assets/css/client-overview.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script defer src="./assets/js/client-overview.js"></script>
 </head>
 <body>
-  <main class="placeholder">
-    <h1>Client Overview</h1>
-    <p>This page is intentionally empty for now. The future client-level experience will be built here.</p>
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="./index.html" class="logo" aria-label="Back to Dashboard">
+        <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 461.18 326.08">
+          <defs>
+            <style>
+              .cls-1 {
+                stroke-width: 0px;
+              }
+            </style>
+          </defs>
+          <path class="cls-1" d="m100.38,170.57l9.24-7.3-9.2-7.26,5.77-10.36-11.2-3.14,1.38-11.69-11.64,1.37-3.25-11.41-10.14,5.7-7.29-9.24-7.29,9.23-10.2-5.86-3.33,11.29-11.54-1.52,1.23,11.8-11.32,3.06,5.63,10.34-9.23,7.08,9.21,7.47-5.84,10.16,11.29,3.33-1.52,11.54,11.8-1.23,3.06,11.32,10.34-5.63,7.09,9.23,7.45-9.18,10.33,5.75,3.14-11.2,11.7,1.38-1.37-11.64,11.41-3.25-5.7-10.14Zm-36.57,17.51c-13.96,0-25.28-11.32-25.28-25.28s11.32-25.28,25.28-25.28,25.28,11.32,25.28,25.28-11.32,25.28-25.28,25.28Z"/>
+          <g>
+            <path class="cls-1" d="m183.06,134.28c-9.66.01-16.16,7.6-16.14,19.13.01,10.58,3.9,16.97,12.66,16.96.08,0,.18,0,.25,0,4.73,0,9.05-1.76,11.15-4.55.25,12.87-1.67,17.59-6.46,17.93-3.96.28-6.42-2.55-6.62-9.35h-9.63c-.08,10.5,6.06,16.75,15.36,16.74,12.64-.01,16.79-9.36,16.79-29.81,0-18.61-5.36-27.05-17.37-27.04Zm-6.56,19.13c-.03-7.42,2.4-11.7,7-11.71,4.7-.02,7.24,4.16,7.27,11.9.03,6.79-2.4,10.67-7.27,10.69-4.61.02-6.97-3.76-7-10.87Z"/>
+            <path class="cls-1" d="m265.97,134.28c-10.84,0-17.25,10.5-17.25,28.5v.47c0,17.61,6.41,27.87,17.25,27.87s17.43-10.26,17.43-27.87v-.47c0-18-6.32-28.5-17.43-28.5Zm7.49,28.98c0,15.71-2.89,20.45-7.49,20.45s-7.31-4.74-7.31-20.45v-.47c0-16.19,2.89-20.92,7.31-20.92s7.49,4.74,7.49,20.92v.47Z"/>
+            <polygon class="cls-1" points="300.58 135.07 290.29 135.07 290.29 190.34 317.74 190.34 317.74 182.44 300.58 182.44 300.58 135.07"/>
+            <path class="cls-1" d="m334.07,135.07l-11.2,55.27h10.43l2.17-11.29h14l2.08,11.29h10.43l-11.29-55.27h-16.62Zm2.66,36.95l5.87-30.87,5.6,30.87h-11.47Z"/>
+            <path class="cls-1" d="m392.25,162.43c6.25-1.84,9.85-5.96,9.85-12.68,0-9.48-6.05-14.69-18.33-14.69h-14.18v55.27h15.89c10.93,0,17.61-4.18,17.61-13.74,0-5.98-3.55-12.21-10.84-14.17h0Zm-12.37-20.26h3.43c5.78,0,8.94,2.92,8.94,8.69,0,5.13-3.07,8.37-9.12,8.37h-3.25v-17.05Zm4.06,41.29h-4.06v-17.76h3.34c6.41,0,10.02,3,10.02,8.53,0,5.84-3.43,9.24-9.3,9.24Z"/>
+            <path class="cls-1" d="m420.25,147.78c0-4.11,2.71-6.32,5.96-6.32,3.52,0,6.27,1.63,5.33,12.48h10.21c.45-13.82-5.42-19.66-15.71-19.66-9.66,0-15.62,5.21-15.62,14.53,0,22.19,23.03,15.24,23.03,29.06,0,3.95-2.08,6.08-5.42,6.08s-7.13-.76-7.13-9.95h-10.57c0,12.08,6.5,17.13,17.07,17.13,9.57,0,15.8-5.05,15.8-14.68,0-20.14-22.94-13.58-22.94-28.66Z"/>
+            <path class="cls-1" d="m154.52,135.07h-8.76c0,5.39-.51,10.89-12.56,10.89v8.25s11.57-.49,11.57-5.56v33.79h-9.2v7.9h27.47v-7.9h-8.52v-47.37Z"/>
+            <path class="cls-1" d="m224.55,191.13c10.2,0,17.82-7.82,17.82-20.29,0-7.94-1.54-13.15-4.17-16.28-1.45-1.73-3.92-3.54-9.31-3.54-6.96,0-10.86,4.72-11.51,6.42v-14.47h20.98v-7.9h-29.5c-.09,12.24,0,31.58,0,31.58l9.46,1.66s.34-10.12,6.82-10.13c6.48-.01,7.67,8.7,7.67,12.5s-.17,13.02-7.7,13.03c-4.12,0-6.42-2.55-6.62-9.35h-9.63c-.08,10.5,6.39,16.78,15.69,16.77"/>
+          </g>
+        </svg>
+      </a>
+      <nav aria-label="Overview Navigation">
+        <ul class="nav-links">
+          <li><a href="./index.html#single">Home</a></li>
+          <li><a href="./index.html#single">Single</a></li>
+          <li><a href="./index.html#batch">Batch</a></li>
+          <li><a href="./client-overview.html" class="active" aria-current="page">Client Overview</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="clientOverview">
+    <section class="hero">
+      <article class="card hero-main">
+        <p class="eyebrow">Client Intelligence</p>
+        <h1>Client Overview</h1>
+        <p id="overviewDescription">
+          Review client-level patterns, concentration, activity mix, and workload trends from the current batch selection.
+        </p>
+      </article>
+      <aside class="card hero-actions">
+        <div class="hero-actions__stack">
+          <a class="button secondary" href="./index.html#batch">Back to Batch Dashboard</a>
+          <p class="status" id="overviewStatus">Waiting for batch data. Open this page from Batch after loading Excel files.</p>
+        </div>
+        <p class="badge" id="overviewBadge">No batch data available</p>
+      </aside>
+    </section>
+
+    <section class="grid-kpis" aria-label="Executive snapshot">
+      <article class="card kpi">
+        <p class="label">Total Hours</p>
+        <p class="value" id="kpiTotalHours">0 h</p>
+        <p class="sub" id="kpiTotalHoursSub">Current visible batch selection</p>
+      </article>
+      <article class="card kpi">
+        <p class="label">Total Clients</p>
+        <p class="value" id="kpiTotalClients">0</p>
+        <p class="sub" id="kpiTotalClientsSub">Clients with recorded activity</p>
+      </article>
+      <article class="card kpi">
+        <p class="label">Active Days</p>
+        <p class="value" id="kpiActiveDays">0</p>
+        <p class="sub" id="kpiActiveDaysSub">Distinct working days</p>
+      </article>
+      <article class="card kpi">
+        <p class="label">Avg Daily Load</p>
+        <p class="value" id="kpiAvgDailyLoad">0 h</p>
+        <p class="sub" id="kpiAvgDailyLoadSub">Average hours per active day</p>
+      </article>
+      <article class="card kpi">
+        <p class="label">Top Client</p>
+        <p class="value" id="kpiTopClient">-</p>
+        <p class="sub" id="kpiTopClientSub">Highest accumulated hours</p>
+      </article>
+      <article class="card kpi">
+        <p class="label">Top 3 Concentration</p>
+        <p class="value" id="kpiTop3Concentration">0%</p>
+        <p class="sub" id="kpiTop3ConcentrationSub">Share of hours in the top 3 clients</p>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="card panel">
+        <h2>Total Hours by Client</h2>
+        <p class="panel-subtitle">Absolute effort ranking across the current batch selection.</p>
+        <div class="chart" id="chartTotalHoursByClient"></div>
+      </article>
+      <article class="card panel">
+        <h2>Hours Distribution by Client</h2>
+        <p class="panel-subtitle">Relative contribution of each client to the total workload.</p>
+        <div class="chart" id="chartHoursDistributionByClient"></div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="card panel">
+        <h2>Total Workload Trend</h2>
+        <p class="panel-subtitle">Daily total hours to spot changes in overall demand.</p>
+        <div class="chart" id="chartTotalWorkloadTrend"></div>
+      </article>
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2>Daily Hours by Top Clients</h2>
+            <p class="panel-subtitle">Multi-line comparison of the main clients over time.</p>
+          </div>
+          <div class="segmented-control" id="topClientsControl">
+            <button class="segmented-control__button active" type="button" data-top-clients="3">Top 3</button>
+            <button class="segmented-control__button" type="button" data-top-clients="5">Top 5</button>
+            <button class="segmented-control__button" type="button" data-top-clients="all">All</button>
+          </div>
+        </div>
+        <div class="chart" id="chartDailyHoursByTopClients"></div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="card panel">
+        <h2>Activity Distribution by Client</h2>
+        <p class="panel-subtitle">Stacked hours by activity, grouped under each client.</p>
+        <div class="chart" id="chartActivityDistributionByClient"></div>
+      </article>
+      <article class="card panel">
+        <h2>Global Hours by Activity</h2>
+        <p class="panel-subtitle">Cross-client activity totals without client segmentation.</p>
+        <div class="chart" id="chartGlobalHoursByActivity"></div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="card panel">
+        <h2>Client Performance</h2>
+        <p class="panel-subtitle">Compare intensity, frequency, and average effort across clients.</p>
+        <div class="mini-grid">
+          <div class="mini-chart">
+            <h3>Average Hours per Active Day</h3>
+            <div class="chart chart--small" id="chartAvgHoursPerDayByClient"></div>
+          </div>
+          <div class="mini-chart">
+            <h3>Active Days by Client</h3>
+            <div class="chart chart--small" id="chartActiveDaysByClient"></div>
+          </div>
+          <div class="mini-chart">
+            <h3>Average Record Duration</h3>
+            <div class="chart chart--small" id="chartAvgRecordDurationByClient"></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card panel panel--full">
+      <h2>Client Summary Table</h2>
+      <p class="panel-subtitle">A compact management view with the main client performance indicators.</p>
+      <div class="summary-table-shell">
+        <div id="summaryTableContainer" class="table-wrap summary-table-wrap"></div>
+      </div>
+    </section>
+
+    <section class="card panel empty-state is-hidden" id="overviewEmptyState">
+      <h2>No Batch Snapshot Found</h2>
+      <p class="panel-subtitle">
+        Load one or more Excel files in Batch, select the users you want to include, and then open Client Overview again.
+      </p>
+      <a class="button secondary" href="./index.html#batch">Go Back to Dashboard</a>
+    </section>
   </main>
 </body>
 </html>

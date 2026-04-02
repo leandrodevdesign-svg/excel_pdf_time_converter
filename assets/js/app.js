@@ -15,6 +15,8 @@ const COPY = {
   }
 };
 
+const CLIENT_OVERVIEW_STORAGE_KEY = "excel_pdf_time_converter_client_overview";
+
 // This application keeps all state in memory because the dashboard is meant
 // to be a lightweight client-side tool with no backend dependencies.
 const state = {
@@ -74,8 +76,9 @@ elements.modeLinks.forEach((link) => {
   });
 });
 window.addEventListener("load", hideInitialLoader, { once: true });
+window.addEventListener("hashchange", handleHashModeChange);
 
-setMode("single");
+setMode(getModeFromHash(), { updateHash: false });
 
 function setStatus(message) {
   elements.status.textContent = message;
@@ -95,7 +98,8 @@ function hideInitialLoader() {
   }, 550);
 }
 
-function setMode(mode) {
+function setMode(mode, options) {
+  const settings = options || {};
   state.mode = mode === "batch" ? "batch" : "single";
   state.currentTablePage = 1;
   const copy = COPY[state.mode];
@@ -116,6 +120,10 @@ function setMode(mode) {
   elements.excelInput.toggleAttribute("multiple", state.mode === "batch");
   elements.excelInput.value = "";
 
+  if (settings.updateHash !== false) {
+    window.history.replaceState(null, "", `#${state.mode}`);
+  }
+
   if (!state.allRows.length) {
     setStatus(copy.waitingStatus);
     elements.periodBadge.textContent = "No data loaded yet";
@@ -123,6 +131,17 @@ function setMode(mode) {
 
   syncSelectedUsers();
   renderCurrentView({ animate: false });
+}
+
+function getModeFromHash() {
+  return window.location.hash === "#batch" ? "batch" : "single";
+}
+
+function handleHashModeChange() {
+  const modeFromHash = getModeFromHash();
+  if (modeFromHash !== state.mode) {
+    setMode(modeFromHash, { updateHash: false });
+  }
 }
 
 // Spreadsheet exports often vary only slightly in their column names.
@@ -444,9 +463,40 @@ function renderCurrentView({ animate }) {
 
   const visibleRows = getVisibleRows();
   renderDashboard(visibleRows);
+  persistClientOverviewSnapshot(visibleRows);
 
   if (animate && visibleRows.length) {
     animateTopSectionAfterUpload();
+  }
+}
+
+function persistClientOverviewSnapshot(visibleRows) {
+  if (state.mode !== "batch" || !state.allRows.length) {
+    return;
+  }
+
+  const payload = {
+    savedAt: new Date().toISOString(),
+    fileNames: state.fileNames,
+    selectedUsers: Array.from(state.selectedUsers),
+    rows: visibleRows.map((row) => ({
+      dateKey: row.dateKey,
+      dateObj: row.dateObj instanceof Date ? row.dateObj.toISOString() : null,
+      hours: row.hours,
+      billableHours: row.billableHours,
+      customer: row.customer,
+      project: row.project,
+      activity: row.activity,
+      description: row.description,
+      username: row.username,
+      sourceFile: row.sourceFile
+    }))
+  };
+
+  try {
+    window.sessionStorage.setItem(CLIENT_OVERVIEW_STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.error("Failed to persist client overview snapshot.", error);
   }
 }
 
