@@ -524,6 +524,7 @@ function animateTopSectionAfterUpload() {
 
   targets.forEach((element) => {
     element.dataset.typewriterText = element.textContent;
+    element.classList.add("typewriter-pending");
   });
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -546,12 +547,14 @@ function typewriteElement(element, text, runId) {
     return;
   }
 
+  element.classList.remove("typewriter-pending");
   element.textContent = "";
   element.classList.add("typewriter-caret");
 
   const characters = Array.from(text);
   const step = () => {
     if (state.activeTypingRun !== runId) {
+      element.classList.remove("typewriter-pending");
       element.classList.remove("typewriter-caret");
       element.textContent = text;
       return;
