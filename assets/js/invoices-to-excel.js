@@ -12,6 +12,7 @@ const elements = {
   dropzone: document.getElementById("dropzone"),
   pdfInput: document.getElementById("pdfInput"),
   processButton: document.getElementById("processBtn"),
+  debugButton: document.getElementById("debugBtn"),
   downloadSourceButton: document.getElementById("downloadSourceBtn"),
   downloadResultButton: document.getElementById("downloadResultBtn"),
   progressLabel: document.getElementById("progressLabel"),
@@ -40,6 +41,7 @@ elements.pdfInput.addEventListener("change", (event) => {
   setSelectedFiles(Array.from(event.target.files || []));
 });
 elements.processButton.addEventListener("click", processInvoices);
+elements.debugButton.addEventListener("click", checkBackendConfig);
 elements.downloadSourceButton.addEventListener("click", () => {
   downloadCsv(state.sourceCsv, "invoice-source.csv");
 });
@@ -276,6 +278,43 @@ async function processInvoices() {
     setStatus(`The invoice batch could not be processed. ${error.message || "Please try again."}`);
   } finally {
     elements.processButton.disabled = !state.files.length;
+  }
+}
+
+async function checkBackendConfig() {
+  if (window.location.protocol === "file:") {
+    setStatus(
+      "Backend config cannot be checked in file preview mode. Open this page through Vercel or another environment where /api/invoices-to-excel is available."
+    );
+    return;
+  }
+
+  elements.debugButton.disabled = true;
+
+  try {
+    const response = await fetch("./api/invoices-to-excel", {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      }
+    });
+
+    const payload = await readJsonSafely(response);
+
+    if (!response.ok) {
+      throw new Error((payload && payload.error) || "Could not read backend config.");
+    }
+
+    setStatus(
+      `Backend OK. Model: ${payload.model || "unknown"}. API key present: ${
+        payload.hasApiKey ? "yes" : "no"
+      }. Key suffix: ${payload.apiKeySuffix || "n/a"}.`
+    );
+  } catch (error) {
+    console.error(error);
+    setStatus(`Backend config check failed. ${error.message || "Please try again."}`);
+  } finally {
+    elements.debugButton.disabled = false;
   }
 }
 

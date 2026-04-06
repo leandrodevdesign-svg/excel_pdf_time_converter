@@ -1,8 +1,19 @@
 const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
 async function handler(req, res) {
+  if (req.method === "GET") {
+    const apiKey = process.env.GEMINI_API_KEY || "";
+    return res.status(200).json({
+      ok: true,
+      model: DEFAULT_MODEL,
+      hasApiKey: Boolean(apiKey),
+      apiKeySuffix: apiKey ? apiKey.slice(-4) : "",
+      timestamp: new Date().toISOString()
+    });
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "GET, POST");
     return res.status(405).json({ error: "Method not allowed." });
   }
 
