@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 
 async function handler(req, res) {
   if (req.method === "GET") {
