@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Upload bulk invoice PDFs, transform them into a source CSV, and generate a final CSV with document names, users, and billed hours."
+  >
+  <title>Invoices to Excel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Sora:wght@100..800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="./assets/css/invoices-to-excel.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="./assets/js/invoices-to-excel.js"></script>
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="./index.html" class="logo" aria-label="1950Labs Home">
+        <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 461.18 326.08">
+          <defs>
+            <style>
+              .cls-1 {
+                stroke-width: 0px;
+              }
+            </style>
+          </defs>
+          <path class="cls-1" d="m100.38,170.57l9.24-7.3-9.2-7.26,5.77-10.36-11.2-3.14,1.38-11.69-11.64,1.37-3.25-11.41-10.14,5.7-7.29-9.24-7.29,9.23-10.2-5.86-3.33,11.29-11.54-1.52,1.23,11.8-11.32,3.06,5.63,10.34-9.23,7.08,9.21,7.47-5.84,10.16,11.29,3.33-1.52,11.54,11.8-1.23,3.06,11.32,10.34-5.63,7.09,9.23,7.45-9.18,10.33,5.75,3.14-11.2,11.7,1.38-1.37-11.64,11.41-3.25-5.7-10.14Zm-36.57,17.51c-13.96,0-25.28-11.32-25.28-25.28s11.32-25.28,25.28-25.28,25.28,11.32,25.28,25.28-11.32,25.28-25.28,25.28Z"/>
+          <g>
+            <path class="cls-1" d="m183.06,134.28c-9.66.01-16.16,7.6-16.14,19.13.01,10.58,3.9,16.97,12.66,16.96.08,0,.18,0,.25,0,4.73,0,9.05-1.76,11.15-4.55.25,12.87-1.67,17.59-6.46,17.93-3.96.28-6.42-2.55-6.62-9.35h-9.63c-.08,10.5,6.06,16.75,15.36,16.74,12.64-.01,16.79-9.36,16.79-29.81,0-18.61-5.36-27.05-17.37-27.04Zm-6.56,19.13c-.03-7.42,2.4-11.7,7-11.71,4.7-.02,7.24,4.16,7.27,11.9.03,6.79-2.4,10.67-7.27,10.69-4.61.02-6.97-3.76-7-10.87Z"/>
+            <path class="cls-1" d="m265.97,134.28c-10.84,0-17.25,10.5-17.25,28.5v.47c0,17.61,6.41,27.87,17.25,27.87s17.43-10.26,17.43-27.87v-.47c0-18-6.32-28.5-17.43-28.5Zm7.49,28.98c0,15.71-2.89,20.45-7.49,20.45s-7.31-4.74-7.31-20.45v-.47c0-16.19,2.89-20.92,7.31-20.92s7.49,4.74,7.49,20.92v.47Z"/>
+            <polygon class="cls-1" points="300.58 135.07 290.29 135.07 290.29 190.34 317.74 190.34 317.74 182.44 300.58 182.44 300.58 135.07"/>
+            <path class="cls-1" d="m334.07,135.07l-11.2,55.27h10.43l2.17-11.29h14l2.08,11.29h10.43l-11.29-55.27h-16.62Zm2.66,36.95l5.87-30.87,5.6,30.87h-11.47Z"/>
+            <path class="cls-1" d="m392.25,162.43c6.25-1.84,9.85-5.96,9.85-12.68,0-9.48-6.05-14.69-18.33-14.69h-14.18v55.27h15.89c10.93,0,17.61-4.18,17.61-13.74,0-5.98-3.55-12.21-10.84-14.17h0Zm-12.37-20.26h3.43c5.78,0,8.94,2.92,8.94,8.69,0,5.13-3.07,8.37-9.12,8.37h-3.25v-17.05Zm4.06,41.29h-4.06v-17.76h3.34c6.41,0,10.02,3,10.02,8.53,0,5.84-3.43,9.24-9.3,9.24Z"/>
+            <path class="cls-1" d="m420.25,147.78c0-4.11,2.71-6.32,5.96-6.32,3.52,0,6.27,1.63,5.33,12.48h10.21c.45-13.82-5.42-19.66-15.71-19.66-9.66,0-15.62,5.21-15.62,14.53,0,22.19,23.03,15.24,23.03,29.06,0,3.95-2.08,6.08-5.42,6.08s-7.13-.76-7.13-9.95h-10.57c0,12.08,6.5,17.13,17.07,17.13,9.57,0,15.8-5.05,15.8-14.68,0-20.14-22.94-13.58-22.94-28.66Z"/>
+            <path class="cls-1" d="m154.52,135.07h-8.76c0,5.39-.51,10.89-12.56,10.89v8.25s11.57-.49,11.57-5.56v33.79h-9.2v7.9h27.47v-7.9h-8.52v-47.37Z"/>
+            <path class="cls-1" d="m224.55,191.13c10.2,0,17.82-7.82,17.82-20.29,0-7.94-1.54-13.15-4.17-16.28-1.45-1.73-3.92-3.54-9.31-3.54-6.96,0-10.86,4.72-11.51,6.42v-14.47h20.98v-7.9h-29.5c-.09,12.24,0,31.58,0,31.58l9.46,1.66s.34-10.12,6.82-10.13c6.48-.01,7.67,8.7,7.67,12.5s-.17,13.02-7.7,13.03c-4.12,0-6.42-2.55-6.62-9.35h-9.63c-.08,10.5,6.39,16.78,15.69,16.77"/>
+          </g>
+        </svg>
+      </a>
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./dashboard.html#single">Single</a></li>
+          <li><a href="./dashboard.html#batch">Batch</a></li>
+          <li><a href="./client-overview.html">Client Overview</a></li>
+          <li><a href="./invoices-to-excel.html" class="active" aria-current="page">Invoices to Excel</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <article class="card hero-copy">
+        <p class="eyebrow">AI Invoice Extraction</p>
+        <h1>Invoices to Excel</h1>
+        <p class="hero-text">
+          Upload a bulk set of developer invoice PDFs, convert their text into a source CSV, send it securely to Gemini,
+          and receive a final CSV with <strong>Document Name</strong>, <strong>User Name</strong>, and <strong>Hours Billed</strong>.
+        </p>
+        <div class="hero-note">
+          <span class="badge">PDF bulk in</span>
+          <span class="badge">CSV preview</span>
+          <span class="badge">Gemini structured output</span>
+        </div>
+      </article>
+
+      <aside class="card hero-panel">
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-describedby="dropzoneHint">
+          <p class="dropzone-title">Drop invoice PDFs here</p>
+          <p class="dropzone-subtitle" id="dropzoneHint">Or browse and select 5 to 40 or more files at once.</p>
+          <label class="button" for="pdfInput">Choose PDF Files</label>
+          <input type="file" id="pdfInput" accept="application/pdf,.pdf" multiple>
+        </div>
+
+        <div class="actions-row">
+          <button class="button secondary" id="processBtn" type="button" disabled>Generate Final CSV</button>
+          <button class="button secondary" id="downloadSourceBtn" type="button" disabled>Download Source CSV</button>
+          <button class="button secondary" id="downloadResultBtn" type="button" disabled>Download Final CSV</button>
+        </div>
+
+        <div class="progress-shell" aria-live="polite">
+          <div class="progress-head">
+            <p class="progress-label" id="progressLabel">Ready to process invoice PDFs.</p>
+            <p class="progress-value" id="progressValue">0%</p>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <p class="status" id="status">No PDFs selected yet. The intermediate CSV is generated in the browser before the secure Gemini request runs.</p>
+      </aside>
+    </section>
+
+    <section class="content-grid">
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Queue</p>
+            <h2>Selected PDFs</h2>
+          </div>
+          <p class="badge" id="selectionBadge">0 files selected</p>
+        </div>
+        <div class="file-list empty" id="fileList">Add invoice PDFs to see the processing queue.</div>
+      </article>
+
+      <article class="card panel">
+        <p class="eyebrow">AI Output</p>
+        <h2>Summary</h2>
+        <p class="panel-subtitle">AI-generated notes are displayed with a typewriter effect once the structured output is ready.</p>
+        <div class="summary-box" id="summaryBox">The final summary will appear here after Gemini processes the source CSV.</div>
+      </article>
+    </section>
+
+    <section class="stats-grid">
+      <article class="card stat-card">
+        <p class="label">Documents</p>
+        <p class="value" id="docCount">0</p>
+        <p class="sub">PDFs currently queued for extraction</p>
+      </article>
+      <article class="card stat-card">
+        <p class="label">Source Rows</p>
+        <p class="value" id="sourceRowCount">0</p>
+        <p class="sub">Rows generated in the browser before the AI request</p>
+      </article>
+      <article class="card stat-card">
+        <p class="label">Result Rows</p>
+        <p class="value" id="resultRowCount">0</p>
+        <p class="sub">Rows returned in the final output CSV</p>
+      </article>
+      <article class="card stat-card">
+        <p class="label">Total Hours</p>
+        <p class="value" id="totalHours">0.0</p>
+        <p class="sub">Sum of billed hours detected in the final CSV</p>
+      </article>
+    </section>
+
+    <section class="content-grid content-grid--wide">
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Intermediate Data</p>
+            <h2>Source CSV Preview</h2>
+          </div>
+          <p class="badge">Document Name + Content</p>
+        </div>
+        <p class="panel-subtitle">This preview shows the browser-generated payload before it is sent to the secure Gemini endpoint.</p>
+        <div class="table-wrap" id="sourcePreviewWrap">
+          <div class="empty" id="sourcePreview">The source CSV preview will appear after text extraction starts.</div>
+        </div>
+      </article>
+
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Final Data</p>
+            <h2>Final CSV Preview</h2>
+          </div>
+          <p class="badge">Document Name + User Name + Hours Billed</p>
+        </div>
+        <p class="panel-subtitle">Once the final CSV is ready, it is previewed here in the UI before download.</p>
+        <div class="table-wrap" id="resultPreviewWrap">
+          <div class="empty" id="resultPreview">The final CSV preview will appear here after Gemini returns the structured rows.</div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
