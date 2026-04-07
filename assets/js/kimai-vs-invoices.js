@@ -3,7 +3,8 @@ const state = {
   invoiceFile: null,
   kimaiUsers: [],
   invoiceGroups: [],
-  pairedRows: []
+  pairedRows: [],
+  activeTypingRun: 0
 };
 
 const elements = {
@@ -37,6 +38,10 @@ function handleKimaiFileChange(event) {
   resetTables("Upload both files to render the comparison.");
   renderMetrics();
   setStatus(state.kimaiFile ? "Kimai file loaded into the queue. Add the invoice CSV to compare both sources." : "Waiting for both files. The comparison runs fully in the browser.");
+  animateComparisonFields([
+    elements.kimaiFilePill,
+    elements.status
+  ]);
 }
 
 function handleInvoiceFileChange(event) {
@@ -48,6 +53,10 @@ function handleInvoiceFileChange(event) {
   resetTables("Upload both files to render the comparison.");
   renderMetrics();
   setStatus(state.invoiceFile ? "Invoice CSV loaded into the queue. Add the Kimai export to compare both sources." : "Waiting for both files. The comparison runs fully in the browser.");
+  animateComparisonFields([
+    elements.invoiceFilePill,
+    elements.status
+  ]);
 }
 
 function updateCompareButton() {
@@ -77,6 +86,14 @@ async function compareFiles() {
     setStatus(
       `Comparison ready. ${comparison.groupCount} mirrored groups generated and ordered alphabetically by normalized name.`
     );
+    animateComparisonFields([
+      elements.status,
+      elements.kimaiUserCount,
+      elements.invoiceUserCount,
+      elements.matchedGroupCount,
+      elements.totalDelta,
+      elements.comparisonBadge
+    ]);
   } catch (error) {
     console.error(error);
     resetTables("The comparison could not be generated. Check the file formats and try again.");
@@ -514,4 +531,70 @@ function parseCsv(text) {
   }
 
   return rows.filter((currentRow) => currentRow.some((cell) => String(cell || "").trim() !== ""));
+}
+
+function animateComparisonFields(targets) {
+  const runId = Date.now();
+  state.activeTypingRun = runId;
+
+  const uniqueTargets = targets
+    .filter(Boolean)
+    .filter((element, index, list) => list.indexOf(element) === index)
+    .filter((element) => element.textContent.trim() !== "");
+
+  uniqueTargets.forEach((element) => {
+    element.dataset.typewriterText = element.textContent;
+    element.classList.add("typewriter-pending");
+  });
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    uniqueTargets.forEach((element) => {
+      element.classList.remove("typewriter-pending");
+    });
+    return;
+  }
+
+  let delay = 0;
+  uniqueTargets.forEach((element) => {
+    const lengthFactor = Math.min(element.dataset.typewriterText.length * 8, 320);
+    window.setTimeout(() => {
+      typewriteElement(element, element.dataset.typewriterText, runId);
+    }, delay);
+    delay += Math.min(28 + lengthFactor * 0.05, 70);
+  });
+}
+
+function typewriteElement(element, text, runId) {
+  if (state.activeTypingRun !== runId) {
+    return;
+  }
+
+  element.classList.remove("typewriter-pending");
+  element.textContent = "";
+  element.classList.add("typewriter-caret");
+
+  const characters = Array.from(text);
+  const step = () => {
+    if (state.activeTypingRun !== runId) {
+      element.classList.remove("typewriter-pending");
+      element.classList.remove("typewriter-caret");
+      element.textContent = text;
+      return;
+    }
+
+    const nextCharacter = characters.shift();
+    if (nextCharacter === undefined) {
+      window.setTimeout(() => {
+        if (state.activeTypingRun === runId) {
+          element.classList.remove("typewriter-caret");
+        }
+      }, 120);
+      return;
+    }
+
+    element.textContent += nextCharacter;
+    window.setTimeout(step, nextCharacter === " " ? 4 : 5);
+  };
+
+  step();
 }

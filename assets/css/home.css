@@ -160,16 +160,16 @@ p {
 }
 
 h1 {
-  font-size: clamp(40px, 6vw, 72px);
-  line-height: 0.98;
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 1.02;
   margin-bottom: 18px;
-  max-width: 12ch;
+  max-width: 14ch;
 }
 
 h2 {
   font-size: clamp(28px, 4vw, 44px);
   line-height: 1.05;
-  max-width: 14ch;
+  max-width: 18ch;
 }
 
 h3 {
@@ -220,6 +220,10 @@ h3 {
   color: var(--text);
 }
 
+.feature-link {
+  margin-top: 18px;
+}
+
 .badge {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.03);
@@ -229,16 +233,17 @@ h3 {
 }
 
 .signal-grid {
-  position: relative;
   min-height: 100%;
   display: grid;
   align-content: center;
   gap: 16px;
 }
 
+.signal-grid--plain {
+  align-content: start;
+}
+
 .signal-card {
-  position: relative;
-  z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.03);
@@ -258,8 +263,8 @@ h3 {
 }
 
 .signal-value {
-  font-size: clamp(28px, 4vw, 46px);
-  line-height: 1;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.15;
   font-weight: 700;
   margin-bottom: 10px;
 }
@@ -267,20 +272,6 @@ h3 {
 .signal-sub {
   color: var(--muted);
   line-height: 1.5;
-}
-
-.signal-orbit {
-  position: absolute;
-  right: 14%;
-  top: 10%;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.14), transparent 45%),
-    conic-gradient(from 45deg, rgba(255, 107, 107, 0.35), rgba(78, 205, 196, 0.15), rgba(255, 209, 102, 0.28), rgba(255, 107, 107, 0.35));
-  filter: blur(10px);
-  opacity: 0.85;
 }
 
 .section-head {
@@ -294,6 +285,21 @@ h3 {
 
 .steps-grid {
   grid-template-columns: repeat(2, 1fr);
+}
+
+.feature-card,
+.audience-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.inline-link {
+  color: #ffffff;
+}
+
+.inline-link:hover {
+  color: #d8d8dc;
 }
 
 .section--steps .step-card {

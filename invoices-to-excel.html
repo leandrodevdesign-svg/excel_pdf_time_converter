@@ -12,11 +12,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Sora:wght@100..800&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="./assets/css/page-effects.css">
   <link rel="stylesheet" href="./assets/css/invoices-to-excel.css">
+  <script defer src="./assets/js/page-loader.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script defer src="./assets/js/invoices-to-excel.js"></script>
 </head>
-<body>
+<body class="is-loading">
+  <div class="page-loader" id="pageLoader" aria-hidden="true">
+    <div class="page-loader__content">
+      <div class="page-loader__spinner"></div>
+      <p class="page-loader__label">Preparing invoices...</p>
+    </div>
+  </div>
   <header class="top-nav">
     <div class="nav-container">
       <a href="./index.html" class="logo" aria-label="1950Labs Home">

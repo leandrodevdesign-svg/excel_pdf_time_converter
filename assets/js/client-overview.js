@@ -31,7 +31,8 @@ const state = {
   colorMapByClient: new Map(),
   colorMapByProject: new Map(),
   charts: [],
-  chartTheme: "screen"
+  chartTheme: "screen",
+  activeTypingRun: 0
 };
 
 const elements = {
@@ -157,6 +158,7 @@ function renderOverview(snapshot) {
   renderAllCharts(metrics);
   renderSummaryTable(metrics.clientSummaries);
   syncTopClientsButtons();
+  animateOverviewText();
 }
 
 function buildMetrics(rows) {
@@ -821,4 +823,89 @@ function getClientColor(label) {
 
 function getProjectLabels(rows) {
   return rows.map((row) => row.project).filter(Boolean);
+}
+
+function collectOverviewTypewriterTargets() {
+  return [
+    elements.overviewStatus,
+    elements.overviewBadge,
+    elements.overviewDescription,
+    elements.kpiTotalHours,
+    elements.kpiTotalHoursSub,
+    elements.kpiTotalClients,
+    elements.kpiTotalClientsSub,
+    elements.kpiActiveDays,
+    elements.kpiActiveDaysSub,
+    elements.kpiAvgDailyLoad,
+    elements.kpiAvgDailyLoadSub,
+    elements.kpiTopClient,
+    elements.kpiTopClientSub,
+    elements.kpiTop3Concentration,
+    elements.kpiTop3ConcentrationSub
+  ].filter(Boolean);
+}
+
+function animateOverviewText() {
+  const runId = Date.now();
+  state.activeTypingRun = runId;
+
+  const targets = collectOverviewTypewriterTargets()
+    .filter((element, index, list) => list.indexOf(element) === index)
+    .filter((element) => element.textContent.trim() !== "");
+
+  targets.forEach((element) => {
+    element.dataset.typewriterText = element.textContent;
+    element.classList.add("typewriter-pending");
+  });
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    targets.forEach((element) => {
+      element.classList.remove("typewriter-pending");
+    });
+    return;
+  }
+
+  let delay = 0;
+  targets.forEach((element) => {
+    const lengthFactor = Math.min(element.dataset.typewriterText.length * 8, 320);
+    window.setTimeout(() => {
+      typewriteElement(element, element.dataset.typewriterText, runId);
+    }, delay);
+    delay += Math.min(28 + lengthFactor * 0.05, 70);
+  });
+}
+
+function typewriteElement(element, text, runId) {
+  if (state.activeTypingRun !== runId) {
+    return;
+  }
+
+  element.classList.remove("typewriter-pending");
+  element.textContent = "";
+  element.classList.add("typewriter-caret");
+
+  const characters = Array.from(text);
+  const step = () => {
+    if (state.activeTypingRun !== runId) {
+      element.classList.remove("typewriter-pending");
+      element.classList.remove("typewriter-caret");
+      element.textContent = text;
+      return;
+    }
+
+    const nextCharacter = characters.shift();
+    if (nextCharacter === undefined) {
+      window.setTimeout(() => {
+        if (state.activeTypingRun === runId) {
+          element.classList.remove("typewriter-caret");
+        }
+      }, 120);
+      return;
+    }
+
+    element.textContent += nextCharacter;
+    window.setTimeout(step, nextCharacter === " " ? 4 : 5);
+  };
+
+  step();
 }

@@ -105,6 +105,14 @@ function setSelectedFiles(files) {
   setStatus(
     `${files.length} PDF${files.length === 1 ? "" : "s"} selected. Total size: ${formatBytes(totalSize)}.`
   );
+  animateInvoiceFields([
+    elements.status,
+    elements.selectionBadge,
+    elements.docCount,
+    elements.sourceRowCount,
+    elements.resultRowCount,
+    elements.totalHours
+  ]);
 }
 
 function syncInputFiles(files) {
@@ -222,6 +230,10 @@ async function processInvoices() {
 
     renderSourcePreview();
     renderMetrics();
+    animateInvoiceFields([
+      elements.sourceRowCount,
+      elements.status
+    ]);
     elements.downloadSourceButton.disabled = false;
 
     setProgress(78, "Source CSV created. Sending it to Gemini...");
@@ -263,6 +275,11 @@ async function processInvoices() {
     );
     typewriteInto(elements.summaryBox, payload.summary || "Gemini finished processing the invoice batch.");
     elements.summaryBox.classList.add("has-result");
+    animateInvoiceFields([
+      elements.status,
+      elements.resultRowCount,
+      elements.totalHours
+    ]);
   } catch (error) {
     console.error(error);
     stopProgressSimulation();
@@ -279,6 +296,72 @@ async function processInvoices() {
   } finally {
     elements.processButton.disabled = !state.files.length;
   }
+}
+
+function animateInvoiceFields(targets) {
+  const runId = Date.now();
+  state.activeTypingRun = runId;
+
+  const uniqueTargets = targets
+    .filter(Boolean)
+    .filter((element, index, list) => list.indexOf(element) === index)
+    .filter((element) => element.textContent.trim() !== "");
+
+  uniqueTargets.forEach((element) => {
+    element.dataset.typewriterText = element.textContent;
+    element.classList.add("typewriter-pending");
+  });
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    uniqueTargets.forEach((element) => {
+      element.classList.remove("typewriter-pending");
+    });
+    return;
+  }
+
+  let delay = 0;
+  uniqueTargets.forEach((element) => {
+    const lengthFactor = Math.min(element.dataset.typewriterText.length * 8, 320);
+    window.setTimeout(() => {
+      typewriteElementWithRun(element, element.dataset.typewriterText, runId);
+    }, delay);
+    delay += Math.min(28 + lengthFactor * 0.05, 70);
+  });
+}
+
+function typewriteElementWithRun(element, text, runId) {
+  if (state.activeTypingRun !== runId) {
+    return;
+  }
+
+  element.classList.remove("typewriter-pending");
+  element.textContent = "";
+  element.classList.add("typewriter-caret");
+
+  const characters = Array.from(text);
+  const step = () => {
+    if (state.activeTypingRun !== runId) {
+      element.classList.remove("typewriter-pending");
+      element.classList.remove("typewriter-caret");
+      element.textContent = text;
+      return;
+    }
+
+    const nextCharacter = characters.shift();
+    if (nextCharacter === undefined) {
+      window.setTimeout(() => {
+        if (state.activeTypingRun === runId) {
+          element.classList.remove("typewriter-caret");
+        }
+      }, 120);
+      return;
+    }
+
+    element.textContent += nextCharacter;
+    window.setTimeout(step, nextCharacter === " " ? 4 : 5);
+  };
+
+  step();
 }
 
 async function checkBackendConfig() {

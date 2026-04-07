@@ -5,15 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta
     name="description"
-    content="Worked Hours Dashboard helps teams upload Excel timesheets, analyze workload, compare clients, and export polished PDF reports."
+    content="Internal workspace for reviewing worked hours, converting invoices, and comparing Kimai exports against invoice records."
   >
-  <title>Worked Hours Dashboard</title>
+  <title>Hours and Invoices Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Sora:wght@100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/page-effects.css">
   <link rel="stylesheet" href="./assets/css/home.css">
+  <script defer src="./assets/js/page-loader.js"></script>
 </head>
-<body>
+<body class="is-loading">
+  <div class="page-loader" id="pageLoader" aria-hidden="true">
+    <div class="page-loader__content">
+      <div class="page-loader__spinner"></div>
+      <p class="page-loader__label">Preparing workspace...</p>
+    </div>
+  </div>
   <header class="top-nav">
     <div class="nav-container">
       <a href="./index.html" class="logo" aria-label="1950Labs Home">
@@ -54,141 +62,141 @@
   <main class="container">
     <section class="hero">
       <article class="hero-copy card">
-        <p class="eyebrow">Time Reporting Software</p>
-        <h1>Turn raw Excel timesheets into dashboards, client intelligence, and exportable reports.</h1>
+        <p class="eyebrow">Internal Workspace</p>
+        <h1>A simple place to review hours, invoices, and comparisons.</h1>
         <p class="hero-text">
-          Worked Hours Dashboard helps teams upload one or many Excel files, understand workload instantly, filter by user, review client-level analytics, and export polished PDF reports without needing a backend or setup-heavy workflow.
+          This site is for internal operational work. It helps the team review Kimai or Excel exports, convert invoice PDFs into a structured CSV, and compare worked hours against invoiced hours before sending information to clients.
         </p>
         <div class="hero-actions">
-          <a class="button" href="./dashboard.html#single">Open Single Mode</a>
-          <a class="button secondary" href="./dashboard.html#batch">Open Batch Mode</a>
-          <a class="button secondary" href="./invoices-to-excel.html">Open Invoices to Excel</a>
-          <a class="button secondary" href="./kimai-vs-invoices.html">Open Kimai vs Invoices</a>
+          <a class="button" href="./dashboard.html#single">Review One File</a>
+          <a class="button secondary" href="./dashboard.html#batch">Review Multiple Files</a>
+          <a class="button secondary" href="./invoices-to-excel.html">Convert Invoices</a>
+          <a class="button secondary" href="./kimai-vs-invoices.html">Compare Kimai vs Invoices</a>
         </div>
         <div class="hero-note">
-          <span class="badge">Excel in</span>
-          <span class="badge">Dashboard out</span>
-          <span class="badge">PDF ready</span>
-          <span class="badge">Invoices parsed</span>
-          <span class="badge">Kimai checked</span>
+          <span class="badge">Excel and Kimai inputs</span>
+          <span class="badge">Invoice CSV outputs</span>
+          <span class="badge">Side-by-side checks</span>
         </div>
       </article>
 
       <aside class="hero-visual card">
-        <div class="signal-grid">
+        <div class="signal-grid signal-grid--plain">
           <div class="signal-card signal-card--main">
-            <p class="signal-label">Control</p>
-            <p class="signal-value">Real visibility</p>
-            <p class="signal-sub">Workload, clients, activities, trends.</p>
+            <p class="signal-label">Best Use</p>
+            <p class="signal-value">Choose a page by task</p>
+            <p class="signal-sub">Each section below explains when to use it and what file you need to upload.</p>
           </div>
           <div class="signal-card">
-            <p class="signal-label">Single</p>
-            <p class="signal-sub">One file, one fast operational dashboard.</p>
+            <p class="signal-label">For Administration</p>
+            <p class="signal-sub">Useful for checking worked hours, preparing invoice records, and comparing totals before sharing results.</p>
           </div>
           <div class="signal-card">
-            <p class="signal-label">Batch</p>
-            <p class="signal-sub">Multiple files or multiple users with filters.</p>
+            <p class="signal-label">Output</p>
+            <p class="signal-sub">Dashboards, PDF exports, invoice CSVs, and mirrored comparison tables.</p>
           </div>
-          <div class="signal-orbit" aria-hidden="true"></div>
         </div>
       </aside>
     </section>
 
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">What It Does</p>
-        <h2>Built for teams that need clarity, not spreadsheet chaos.</h2>
+        <p class="eyebrow">Pages</p>
+        <h2>Use the page that matches the job you need to do.</h2>
       </div>
       <div class="feature-grid">
         <article class="card feature-card">
-          <h3>Single Analysis</h3>
-          <p>Upload one Excel file and get total hours, daily distribution, project and activity breakdowns, operational details, and PDF export.</p>
+          <h3>Single</h3>
+          <p>Use this when you need to inspect one Excel or Kimai-style export quickly. It shows totals, daily distribution, projects, activities, and a detailed table.</p>
+          <a class="button secondary feature-link" href="./dashboard.html#single">Open Single</a>
         </article>
         <article class="card feature-card">
-          <h3>Batch Analysis</h3>
-          <p>Upload several files or one file with many users, select who should be included, and keep the dashboard focused on the visible users only.</p>
+          <h3>Batch</h3>
+          <p>Use this when you have several files or several users in one file. You can filter the visible users and keep the dashboard focused on the people you want to review.</p>
+          <a class="button secondary feature-link" href="./dashboard.html#batch">Open Batch</a>
         </article>
         <article class="card feature-card">
           <h3>Client Overview</h3>
-          <p>Move from operational records to management insight with client concentration, workload trends, activity distribution, and executive summary tables.</p>
+          <p>Use this after Batch when you want a client-level view. It summarizes concentration, workload trends, and activity mix by client.</p>
+          <a class="button secondary feature-link" href="./client-overview.html">Open Client Overview</a>
         </article>
         <article class="card feature-card">
           <h3>Invoices to Excel</h3>
-          <p>Upload multiple developer invoice PDFs, turn them into a structured CSV, and preview the extracted people and billed hours before export.</p>
+          <p>Use this to upload invoice PDFs and convert them into a CSV with document name, user name, and billed hours. The output is previewed before download.</p>
+          <a class="button secondary feature-link" href="./invoices-to-excel.html">Open Invoices to Excel</a>
         </article>
         <article class="card feature-card">
           <h3>Kimai vs Invoices</h3>
-          <p>Compare Kimai-exported usernames and hours against the invoice CSV in a mirrored, alphabetically ordered reconciliation view.</p>
+          <p>Use this to compare Kimai hours against the invoice CSV. It aligns names even when Kimai uses dots instead of spaces and shows both sides in mirrored tables.</p>
+          <a class="button secondary feature-link" href="./kimai-vs-invoices.html">Open Comparison</a>
         </article>
       </div>
     </section>
 
     <section class="section section--steps">
       <div class="section-head">
-        <p class="eyebrow">How To Use It</p>
-        <h2>A clear workflow from upload to report.</h2>
+        <p class="eyebrow">Typical Flow</p>
+        <h2>A practical order for the most common work.</h2>
       </div>
       <div class="steps-grid">
         <article class="card step-card">
           <p class="step-index">01</p>
-          <h3>Choose the right mode</h3>
-          <p>Use <strong>Single</strong> when working with one export, or <strong>Batch</strong> when you need multiple users or multiple Excel files together.</p>
+          <h3>Start with the source file</h3>
+          <p>If you only need to inspect one export, open <strong>Single</strong>. If you need several files or several users, open <strong>Batch</strong>.</p>
         </article>
         <article class="card step-card">
           <p class="step-index">02</p>
-          <h3>Upload the Excel data</h3>
-          <p>Load `.xlsx` or `.xls` files that include columns such as Date, In, Out, Time, Client, Project, Activity, Description, and Username.</p>
+          <h3>Review hours and records</h3>
+          <p>Check totals, daily load, projects, activities, usernames, and detailed records before preparing anything for comparison or export.</p>
         </article>
         <article class="card step-card">
           <p class="step-index">03</p>
-          <h3>Review the dashboard</h3>
-          <p>Inspect KPIs, daily load, projects, activities, quick reads, and the detailed records table to understand the operating picture.</p>
+          <h3>Generate invoice CSVs when needed</h3>
+          <p>If your starting point is a set of invoice PDFs, open <strong>Invoices to Excel</strong> and convert them into a clean CSV first.</p>
         </article>
         <article class="card step-card">
           <p class="step-index">04</p>
-          <h3>Filter in Batch mode</h3>
-          <p>When multiple users exist, choose one, several, or all users. The dashboard, table, and exported PDF will follow that selection.</p>
+          <h3>Compare Kimai and invoices</h3>
+          <p>Open <strong>Kimai vs Invoices</strong> when you need to check whether invoiced hours match the worked hours exported from Kimai.</p>
         </article>
         <article class="card step-card">
           <p class="step-index">05</p>
-          <h3>Open Client Overview</h3>
-          <p>Jump to the client intelligence page to understand client concentration, performance, activity mix, and trend behavior over time.</p>
+          <h3>Use Client Overview for summaries</h3>
+          <p>After reviewing Batch data, use <strong>Client Overview</strong> when you need a cleaner client-facing summary of the workload.</p>
         </article>
         <article class="card step-card">
           <p class="step-index">06</p>
-          <h3>Export polished PDFs</h3>
-          <p>Generate shareable PDF reports from both the dashboard and the client overview, with layouts prepared for readable presentation.</p>
-        </article>
-        <article class="card step-card">
-          <p class="step-index">07</p>
-          <h3>Convert invoices into CSV</h3>
-          <p>Open <strong>Invoices to Excel</strong>, upload a bulk of PDF invoices, let AI extract the billed user and hours, then preview and download the final CSV.</p>
-        </article>
-        <article class="card step-card">
-          <p class="step-index">08</p>
-          <h3>Compare Kimai vs invoices</h3>
-          <p>Upload a Kimai export together with the invoice CSV, then review usernames and hours in two mirrored tables ordered alphabetically for fast reconciliation.</p>
+          <h3>Export or download the result</h3>
+          <p>Depending on the page, finish by exporting a PDF report or downloading the generated CSV for the next step in your process.</p>
         </article>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Who It Is For</p>
-        <h2>Useful for operations, leadership, and client-facing reporting.</h2>
+        <p class="eyebrow">Quick Help</p>
+        <h2>If you are not sure where to start, use this guide.</h2>
       </div>
       <div class="audience-grid">
         <article class="card audience-card">
-          <h3>Managers</h3>
-          <p>See workload concentration, active clients, delivery effort, and performance patterns quickly.</p>
+          <h3>I have one hours export</h3>
+          <p>Go to <a class="inline-link" href="./dashboard.html#single">Single</a>.</p>
         </article>
         <article class="card audience-card">
-          <h3>Operations Teams</h3>
-          <p>Audit records, validate timesheet structure, and review activity distributions without jumping between files.</p>
+          <h3>I have several files or users</h3>
+          <p>Go to <a class="inline-link" href="./dashboard.html#batch">Batch</a>.</p>
         </article>
         <article class="card audience-card">
-          <h3>Consulting or Service Teams</h3>
-          <p>Prepare internal reviews or external summaries from raw time-tracking exports with much less manual work.</p>
+          <h3>I have invoice PDFs</h3>
+          <p>Go to <a class="inline-link" href="./invoices-to-excel.html">Invoices to Excel</a>.</p>
+        </article>
+        <article class="card audience-card">
+          <h3>I need a client summary</h3>
+          <p>Go to <a class="inline-link" href="./client-overview.html">Client Overview</a>.</p>
+        </article>
+        <article class="card audience-card">
+          <h3>I need to compare worked vs invoiced hours</h3>
+          <p>Go to <a class="inline-link" href="./kimai-vs-invoices.html">Kimai vs Invoices</a>.</p>
         </article>
       </div>
     </section>

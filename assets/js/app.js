@@ -295,13 +295,14 @@ async function handleFileUpload(event) {
     state.fileNames = files.map((file) => file.name);
     state.currentTablePage = 1;
     syncSelectedUsers(true);
-    renderCurrentView({ animate: true });
 
     setStatus(
       files.length === 1
         ? `Loaded ${files[0].name} successfully. Processed ${rows.length} records.`
         : `Loaded ${files.length} files successfully. Processed ${rows.length} records.`
     );
+
+    renderCurrentView({ animate: true });
   } catch (error) {
     console.error(error);
     setStatus(`The file could not be processed. ${error.message || "Check the format and try again."}`);
