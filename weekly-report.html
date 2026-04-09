@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta
     name="description"
-    content="Upload an Excel timesheet, review worked-hours insights, and export the dashboard to PDF."
+    content="Upload multiple Excel timesheets, choose a weekly range, and review logged hours by user and day."
   >
-  <title>Worked Hours Dashboard</title>
+  <title>Weekly Report</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Sora:wght@100..800&display=swap" rel="stylesheet">
@@ -16,13 +16,13 @@
   <link rel="stylesheet" href="./assets/css/styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script defer src="./assets/js/app.js"></script>
+  <script defer src="./assets/js/weekly-report.js"></script>
 </head>
 <body class="is-loading">
   <div class="page-loader" id="pageLoader" aria-hidden="true">
     <div class="page-loader__content">
       <div class="page-loader__spinner"></div>
-      <p class="page-loader__label">Preparing dashboard...</p>
+      <p class="page-loader__label">Preparing weekly report...</p>
     </div>
   </div>
 
@@ -53,9 +53,9 @@
       <nav aria-label="Main Navigation">
         <ul class="nav-links">
           <li><a href="./index.html">Home</a></li>
-          <li><a href="./dashboard.html#single" class="active" aria-current="page" data-mode-link="single">Single</a></li>
-          <li><a href="./dashboard.html#batch" data-mode-link="batch">Batch</a></li>
-          <li><a href="./weekly-report.html">Weekly Report</a></li>
+          <li><a href="./dashboard.html#single">Single</a></li>
+          <li><a href="./dashboard.html#batch">Batch</a></li>
+          <li><a href="./weekly-report.html" class="active" aria-current="page">Weekly Report</a></li>
           <li><a href="./client-overview.html">Client Overview</a></li>
           <li><a href="./invoices-to-excel.html">Invoices to Excel</a></li>
           <li><a href="./kimai-vs-invoices.html">Kimai vs Invoices</a></li>
@@ -64,40 +64,61 @@
     </div>
   </header>
 
-  <main class="container" id="dashboard">
-    <section class="hero" aria-labelledby="dashboard-title">
+  <main class="container" id="weeklyReport">
+    <section class="hero" aria-labelledby="weekly-report-title">
       <article class="card hero-main">
-        <p class="eyebrow" id="heroEyebrow">Time Analytics</p>
-        <h1 id="dashboard-title">Worked Hours Dashboard</h1>
-        <p id="heroDescription">
-          Upload an Excel file with columns such as <strong>Date</strong>, <strong>In</strong>, <strong>Out</strong>,
-          <strong>Time</strong>, <strong>Customer</strong>, <strong>Project</strong>, and <strong>Activity</strong>.
-          The application restructures the raw data into an executive dashboard with metrics, workload distribution,
-          quick insights, and an audit-ready detail table.
+        <p class="eyebrow">Weekly Report</p>
+        <h1 id="weekly-report-title">Worked Hours by User and Day</h1>
+        <p>
+          Upload one or more Excel files, choose the week you want to review, and generate a table with each
+          username plus the hours logged on each day of the selected range.
         </p>
       </article>
 
-      <aside class="card hero-actions" aria-label="Dashboard actions">
+      <aside class="card hero-actions" aria-label="Weekly report actions">
         <div class="uploader">
-          <label class="file-label" for="excelInput" id="uploadLabel">Upload Excel File</label>
-          <input type="file" id="excelInput" accept=".xlsx,.xls">
+          <label class="file-label" for="excelInput">Upload One or More Excel Files</label>
+          <input type="file" id="excelInput" accept=".xlsx,.xls" multiple>
           <button class="button secondary" id="pdfBtn" type="button">Export to PDF</button>
         </div>
 
         <p class="status" id="status" aria-live="polite">
-          Waiting for a file. Use the same structure exported by your time-tracking system.
+          Waiting for files. This report is designed for weekly review across several users.
         </p>
 
         <p class="badge" id="periodBadge">No data loaded yet</p>
       </aside>
     </section>
 
-    <section class="filters-grid is-hidden" id="batchFilters">
-      <article class="card panel filters-panel" aria-labelledby="batch-filters-title">
+    <section class="filters-grid">
+      <article class="card panel filters-panel" aria-labelledby="week-range-title">
         <div class="filters-head">
           <div>
-            <h2 id="batch-filters-title">User Selection</h2>
-            <p class="panel-subtitle">Choose one, multiple, or all users. The table and exported PDF will use only the selected users.</p>
+            <h2 id="week-range-title">Week Selection</h2>
+            <p class="panel-subtitle">Choose the start and end dates to build the weekly report table.</p>
+          </div>
+        </div>
+
+        <div class="filter-form">
+          <label class="field">
+            <span class="field-label">Start Day</span>
+            <input class="field-input" id="weekStartInput" type="date">
+          </label>
+
+          <label class="field">
+            <span class="field-label">End Day</span>
+            <input class="field-input" id="weekEndInput" type="date">
+          </label>
+        </div>
+
+        <p class="status week-status" id="weekStatus">Load files to enable weekly date selection.</p>
+      </article>
+
+      <article class="card panel filters-panel" aria-labelledby="user-filter-title">
+        <div class="filters-head">
+          <div>
+            <h2 id="user-filter-title">User Selection</h2>
+            <p class="panel-subtitle">Choose one, multiple, or all users. The weekly table and exported PDF will use only the selected users.</p>
           </div>
           <div class="filter-actions">
             <button class="button secondary small" id="selectAllUsersBtn" type="button">Select All</button>
@@ -106,78 +127,43 @@
         </div>
         <div class="user-chip-list" id="userFilterList"></div>
       </article>
-
-      <article class="card panel overview-panel" aria-labelledby="client-overview-title">
-        <h2 id="client-overview-title">Client Overview</h2>
-        <p class="panel-subtitle">Open the client-focused workspace. This page is scaffolded now and ready for future implementation.</p>
-        <a class="button secondary" href="./client-overview.html">Open Client Overview</a>
-      </article>
     </section>
 
-    <section class="grid-kpis" aria-label="Key performance indicators">
+    <section class="grid-kpis" aria-label="Weekly report indicators">
       <article class="card kpi">
-        <p class="label" data-typed-static="true">Total Hours</p>
-        <p class="value" id="kpiTotal">0 h</p>
-        <p class="sub" id="kpiTotalSub">Upload a file to calculate this indicator</p>
+        <p class="label">Total Hours</p>
+        <p class="value" id="kpiTotalHours">0:00</p>
+        <p class="sub" id="kpiTotalHoursSub">Select a week to summarize logged hours</p>
       </article>
 
       <article class="card kpi">
-        <p class="label" data-typed-static="true">Average per Day</p>
-        <p class="value" id="kpiAvg">0 h</p>
-        <p class="sub" id="kpiAvgSub">Based on days with logged activity</p>
+        <p class="label">Users with Hours</p>
+        <p class="value" id="kpiUsers">0</p>
+        <p class="sub" id="kpiUsersSub">Weekly active users will appear here</p>
       </article>
 
       <article class="card kpi">
-        <p class="label" data-typed-static="true">Busiest Day</p>
-        <p class="value" id="kpiBest">-</p>
-        <p class="sub" id="kpiBestSub">The date and total load will appear here</p>
+        <p class="label">Busiest Day</p>
+        <p class="value" id="kpiBestDay">-</p>
+        <p class="sub" id="kpiBestDaySub">The strongest day of the selected week</p>
       </article>
 
       <article class="card kpi">
-        <p class="label" data-typed-static="true">Billable Percentage</p>
-        <p class="value" id="kpiBillable">0%</p>
-        <p class="sub" id="kpiBillableSub">Calculated from the Billable column</p>
+        <p class="label">Average per Active User</p>
+        <p class="value" id="kpiAvgUser">0:00</p>
+        <p class="sub" id="kpiAvgUserSub">Calculated on users with weekly activity</p>
       </article>
     </section>
 
-    <section class="content-grid" aria-label="Daily overview">
-      <article class="card panel">
-        <h2 data-typed-static="true">Daily Distribution</h2>
-        <p class="panel-subtitle" data-typed-static="true">Hours grouped by day to identify patterns and workload peaks.</p>
-        <div class="chart-toolbar" id="dailyChartToolbar">
-          <button class="button secondary small" id="dailyPrevMonthBtn" type="button">Previous Month</button>
-          <p class="chart-period" id="dailyMonthLabel">No month selected</p>
-          <button class="button secondary small" id="dailyNextMonthBtn" type="button">Next Month</button>
-        </div>
-        <div id="dailyChart" class="chart" role="img" aria-label="Daily worked hours chart"></div>
-      </article>
-
-      <article class="card panel">
-        <h2 data-typed-static="true">Quick Reads</h2>
-        <p class="panel-subtitle" data-typed-static="true">High-level indicators for operational or management review.</p>
-        <div class="stats-list" id="quickStats"></div>
-      </article>
-    </section>
-
-    <section class="content-grid" aria-label="Work allocation overview">
-      <article class="card panel">
-        <h2>Hours by Project</h2>
-        <p class="panel-subtitle">Ranking of projects with the highest accumulated effort.</p>
-        <div id="projectChart" class="chart" role="img" aria-label="Hours by project chart"></div>
-      </article>
-
-      <article class="card panel">
-        <h2>Hours by Activity</h2>
-        <p class="panel-subtitle">Shows which type of work consumes the most time.</p>
-        <div id="activityChart" class="chart" role="img" aria-label="Hours by activity chart"></div>
-      </article>
-    </section>
-
-    <section class="card panel" aria-labelledby="detail-title">
-      <h2 id="detail-title">Record Details</h2>
-      <p class="panel-subtitle">Operational view ordered for audits, validation, or manual review.</p>
-      <div id="tableContainer" class="empty">There are no records to display yet.</div>
-      <div class="table-pagination is-hidden" id="tablePagination"></div>
+    <section class="card panel" id="weeklyTableSection" aria-labelledby="weekly-table-title">
+      <h2 id="weekly-table-title">Weekly Hours Table</h2>
+      <p class="panel-subtitle">Each row summarizes one user and shows how many hours were logged on each day of the selected week.</p>
+      <div class="table-actions" aria-label="Weekly table actions">
+        <button class="button secondary small" id="tablePdfBtn" type="button">Export PDF</button>
+        <button class="button secondary small" id="downloadCsvBtn" type="button">Download CSV</button>
+        <button class="button secondary small" id="copyMissingUsersBtn" type="button">Copy Users Missing Hours</button>
+      </div>
+      <div id="tableContainer" class="empty">There are no weekly records to display yet.</div>
       <p class="footer-note">PDF export is built into the page.</p>
     </section>
   </main>
