@@ -4,6 +4,7 @@ const state = {
   kimaiUsers: [],
   invoiceGroups: [],
   pairedRows: [],
+  comparisonCsv: "",
   activeTypingRun: 0
 };
 
@@ -13,6 +14,7 @@ const elements = {
   kimaiFilePill: document.getElementById("kimaiFilePill"),
   invoiceFilePill: document.getElementById("invoiceFilePill"),
   compareButton: document.getElementById("compareBtn"),
+  downloadComparisonButton: document.getElementById("downloadComparisonBtn"),
   status: document.getElementById("status"),
   kimaiUserCount: document.getElementById("kimaiUserCount"),
   invoiceUserCount: document.getElementById("invoiceUserCount"),
@@ -26,6 +28,7 @@ const elements = {
 elements.kimaiInput.addEventListener("change", handleKimaiFileChange);
 elements.invoiceInput.addEventListener("change", handleInvoiceFileChange);
 elements.compareButton.addEventListener("click", compareFiles);
+elements.downloadComparisonButton.addEventListener("click", downloadComparisonCsv);
 
 renderMetrics();
 
@@ -33,6 +36,7 @@ function handleKimaiFileChange(event) {
   state.kimaiFile = event.target.files && event.target.files[0] ? event.target.files[0] : null;
   state.kimaiUsers = [];
   state.pairedRows = [];
+  state.comparisonCsv = "";
   elements.kimaiFilePill.textContent = state.kimaiFile ? state.kimaiFile.name : "No Kimai file selected";
   updateCompareButton();
   resetTables("Upload both files to render the comparison.");
@@ -48,6 +52,7 @@ function handleInvoiceFileChange(event) {
   state.invoiceFile = event.target.files && event.target.files[0] ? event.target.files[0] : null;
   state.invoiceGroups = [];
   state.pairedRows = [];
+  state.comparisonCsv = "";
   elements.invoiceFilePill.textContent = state.invoiceFile ? state.invoiceFile.name : "No invoice CSV selected";
   updateCompareButton();
   resetTables("Upload both files to render the comparison.");
@@ -61,6 +66,7 @@ function handleInvoiceFileChange(event) {
 
 function updateCompareButton() {
   elements.compareButton.disabled = !(state.kimaiFile && state.invoiceFile);
+  elements.downloadComparisonButton.disabled = !state.comparisonCsv;
 }
 
 async function compareFiles() {
@@ -79,6 +85,7 @@ async function compareFiles() {
     state.kimaiUsers = kimaiUsers;
     state.invoiceGroups = invoiceGroups;
     state.pairedRows = comparison.rows;
+    state.comparisonCsv = buildComparisonCsv(kimaiUsers, invoiceGroups);
 
     renderMetrics(comparison);
     renderMirrorTables(comparison.rows);
@@ -96,6 +103,7 @@ async function compareFiles() {
     ]);
   } catch (error) {
     console.error(error);
+    state.comparisonCsv = "";
     resetTables("The comparison could not be generated. Check the file formats and try again.");
     setStatus(`The comparison could not be generated. ${error.message || "Please try again."}`);
   } finally {
@@ -401,6 +409,22 @@ function resetTables(message) {
   elements.comparisonBadge.textContent = "No comparison generated yet";
 }
 
+function downloadComparisonCsv() {
+  if (!state.comparisonCsv) {
+    return;
+  }
+
+  const blob = new Blob([state.comparisonCsv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "kimai-vs-invoices-comparison.csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function setStatus(message) {
   elements.status.textContent = message;
 }
@@ -483,6 +507,51 @@ function formatHours(value) {
 function formatSignedHours(value) {
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(1)} h`;
+}
+
+function buildComparisonCsv(kimaiUsers, invoiceGroups) {
+  const kimaiMap = new Map(kimaiUsers.map((entry) => [entry.normalizedKey, entry]));
+  const invoiceMap = new Map(invoiceGroups.map((entry) => [entry.normalizedKey, entry]));
+  const keys = Array.from(new Set(kimaiUsers.map((entry) => entry.normalizedKey).concat(invoiceGroups.map((entry) => entry.normalizedKey)))).sort(
+    (left, right) => {
+      const leftLabel = getGroupLabel(left, kimaiMap, invoiceMap);
+      const rightLabel = getGroupLabel(right, kimaiMap, invoiceMap);
+      return leftLabel.localeCompare(rightLabel);
+    }
+  );
+
+  const headers = [
+    "Kimai Name",
+    "Kimai Hours",
+    "Invoice Name",
+    "Invoice Hours"
+  ];
+
+  const csvRows = keys.map((key) => {
+    const kimaiEntry = kimaiMap.get(key) || null;
+    const invoiceEntry = invoiceMap.get(key) || null;
+
+    return [
+      kimaiEntry ? kimaiEntry.displayName : "",
+      kimaiEntry ? formatHoursNumber(kimaiEntry.totalHours) : "",
+      invoiceEntry ? invoiceEntry.displayName : "",
+      invoiceEntry ? formatHoursNumber(invoiceEntry.totalHours) : ""
+    ];
+  });
+
+  return [headers].concat(csvRows).map((row) => row.map(escapeCsvCell).join(",")).join("\n");
+}
+
+function formatHoursNumber(value) {
+  return Number(value).toFixed(1);
+}
+
+function escapeCsvCell(value) {
+  const text = String(value === undefined || value === null ? "" : value);
+  if (/[",\n\r]/.test(text)) {
+    return `"${text.replace(/"/g, "\"\"")}"`;
+  }
+  return text;
 }
 
 function parseCsv(text) {
