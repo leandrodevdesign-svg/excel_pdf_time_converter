@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/access.css">
+  <script defer src="./assets/js/access.js"></script>
+</head>
+<body>
+  <main class="access-shell">
+    <section class="access-card" aria-labelledby="accessTitle">
+      <div class="access-mark" aria-hidden="true"></div>
+      <h1 class="access-title" id="accessTitle">Restricted Access</h1>
+      <p class="access-copy">Enter the access code to continue.</p>
+      <form class="access-form" id="accessForm">
+        <label class="sr-only" for="accessInput">Access code</label>
+        <input
+          class="access-input"
+          id="accessInput"
+          name="accessCode"
+          type="password"
+          inputmode="numeric"
+          autocomplete="current-password"
+          placeholder="Access code"
+          aria-describedby="accessStatus"
+        >
+        <button class="access-button" type="submit">Continue</button>
+        <p class="access-status" id="accessStatus" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

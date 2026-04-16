@@ -1,0 +1,134 @@
+:root {
+  color-scheme: light;
+  --access-bg: #f7f5ef;
+  --access-panel: rgba(255, 255, 255, 0.84);
+  --access-border: rgba(22, 28, 45, 0.1);
+  --access-text: #151922;
+  --access-muted: #68707f;
+  --access-accent: #111827;
+  --access-accent-hover: #000000;
+  --access-shadow: 0 24px 60px rgba(17, 24, 39, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 35%),
+    linear-gradient(180deg, #f4f1e8 0%, var(--access-bg) 100%);
+  color: var(--access-text);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.access-shell {
+  width: min(100%, 360px);
+}
+
+.access-card {
+  padding: 28px;
+  border: 1px solid var(--access-border);
+  border-radius: 20px;
+  background: var(--access-panel);
+  box-shadow: var(--access-shadow);
+  backdrop-filter: blur(14px);
+}
+
+.access-mark {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 20px;
+  border: 1px solid var(--access-border);
+  border-radius: 999px;
+}
+
+.access-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.access-copy {
+  margin: 10px 0 18px;
+  color: var(--access-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.access-form {
+  display: grid;
+  gap: 12px;
+}
+
+.access-input {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid rgba(17, 24, 39, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--access-text);
+  font: inherit;
+  outline: none;
+}
+
+.access-input:focus {
+  border-color: rgba(17, 24, 39, 0.35);
+  box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.08);
+}
+
+.access-button {
+  width: 100%;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--access-accent);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.access-button:hover {
+  background: var(--access-accent-hover);
+}
+
+.access-button:active {
+  transform: translateY(1px);
+}
+
+.access-form.is-busy .access-button {
+  cursor: wait;
+  opacity: 0.9;
+}
+
+.access-status {
+  min-height: 1.3em;
+  margin: 2px 0 0;
+  color: var(--access-muted);
+  font-size: 0.88rem;
+}
